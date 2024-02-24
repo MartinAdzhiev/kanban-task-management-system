@@ -17,7 +17,13 @@ class ProjectSeeder extends Seeder
     {
         //
         $projects = array(
-            ['id' => 1, 'name'=> 'Test project', 'description' => 'Initial project', 'owner_id' => 1,
+            ['id' => 1, 'name'=> 'Test project1', 'description' => 'Initial project1', 'owner_id' => 1,
+                'created_at' => new DateTime, 'updated_at' => new DateTime],
+
+            ['id' => 2, 'name'=> 'Test project2', 'description' => 'Initial project2', 'owner_id' => 1,
+            'created_at' => new DateTime, 'updated_at' => new DateTime],
+
+            ['id' => 3, 'name'=> 'Test project3', 'description' => 'Initial project3', 'owner_id' => 1,
                 'created_at' => new DateTime, 'updated_at' => new DateTime]
         );
 

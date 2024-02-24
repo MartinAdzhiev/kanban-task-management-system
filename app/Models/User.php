@@ -62,4 +62,8 @@ class User extends Authenticatable
     public function ownerBoards(){
         return $this->hasMany('App\Models\Project', 'owner_id');
     }
+
+    public function projects(){
+        return $this->belongsToMany(Project::class);
+    }
 }

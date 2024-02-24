@@ -18,4 +18,8 @@ class Project extends Model
     public function boards(){
         return $this->hasMany('App\Models\Board', 'project_id');
     }
+
+    public function members() {
+        return $this->belongsToMany(User::class);
+    }
 }

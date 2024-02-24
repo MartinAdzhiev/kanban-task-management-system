@@ -14,4 +14,8 @@ class Column extends Model
     public function board(){
         return $this->belongsTo('App\Models\Board', 'board_id');
     }
+
+    public function tasks(){
+        return $this->hasMany('App\Models\Task', 'column_id');
+    }
 }
