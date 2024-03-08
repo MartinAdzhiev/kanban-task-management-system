@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProjectController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -33,3 +34,9 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('dashboard');
 });
+
+//Project
+Route::get("/projects/list", [ProjectController::class, 'index'])->name("project.index");
+Route::post("/projects/store", [ProjectController::class, 'store'])->name("project.store");
+Route::put("/projects/{project}/update", [ProjectController::class, 'update'])->name("projects.update");
+Route::delete("/projects/{project}/delete", [ProjectController::class, 'destroy'])->name("projects.destroy");
