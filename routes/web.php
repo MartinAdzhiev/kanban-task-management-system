@@ -4,6 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\ColumnController;
+use App\Http\Controllers\TaskController;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,3 +44,10 @@ Route::post('/column', [ColumnController::class, 'store'])->name('column.store')
 Route::get('/column/{column}/edit', [ColumnController::class, 'edit'])->name('column.edit');
 Route::put('/column/{column}/update', [ColumnController::class, 'update'])->name('column.update');
 Route::delete('/column/{column}/delete', [ColumnController::class, 'destroy'])->name('column.destroy');
+
+//Task
+Route::get('board/{board}/column/{column}/task/create', [TaskController::class, 'create'])->name('task.create');
+Route::post('/task', [TaskController::class, 'store'])->name('task.store');
+Route::get('/task/{task}/edit', [TaskController::class, 'edit'])->name('task.edit');
+Route::put('/task/{task}/update', [TaskController::class, 'update'])->name('task.update');
+Route::delete('/task/{task}/delete', [TaskController::class, 'destroy'])->name('task.destroy');
