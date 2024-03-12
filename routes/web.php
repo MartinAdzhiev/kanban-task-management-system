@@ -46,6 +46,7 @@ Route::put('/column/{column}/update', [ColumnController::class, 'update'])->name
 Route::delete('/column/{column}/delete', [ColumnController::class, 'destroy'])->name('column.destroy');
 
 //Task
+Route::get('/task', [TaskController::class, 'index'])->name('task.index');
 Route::get('board/{board}/column/{column}/task/create', [TaskController::class, 'create'])->name('task.create');
 Route::post('/task', [TaskController::class, 'store'])->name('task.store');
 Route::get('/task/{task}/edit', [TaskController::class, 'edit'])->name('task.edit');

@@ -8,6 +8,7 @@ use App\Models\Column;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
@@ -17,7 +18,9 @@ class TaskController extends Controller
 
     public function index()
     {
-        //
+        $tasks = Task::where('assigned_to', Auth::id())->get();
+
+        return Inertia::render('Task/Index', ['tasks' => $tasks]);
     }
 
 
@@ -46,18 +49,25 @@ class TaskController extends Controller
 
     public function store(Request $request)
     {
+        $assign_to_me = $request->input('assign_to_me');
+
         $data = $request->validate([
             'column_id' => 'required',
             'name' => 'required',
             'description' => 'required',
-            'deadline' => 'required',
+            'deadline' => ['required', 'after_or_equal:' . now()->format('Y-m-d')],
             'priority' => ['required', Rule::in(array_column(TaskPriority::cases(), 'value'))],
-            'assigned_to' => 'required',
+            'assigned_to' => Rule::requiredIf($assign_to_me == false),
         ]);
+
+        if ($assign_to_me) {
+            $data['assigned_to'] = Auth::id();
+        }
+
 
         Task::create($data);
 
-        return redirect('/');
+        return redirect('/task');
     }
 
 
@@ -67,15 +77,51 @@ class TaskController extends Controller
     }
 
 
-    public function edit(string $id)
+    public function edit(Task $task)
     {
-        //
+        $priorities = array_column(TaskPriority::cases(), 'value');
+
+        $column = Column::find($task->column_id);
+        $board = Board::find($column->board_id);
+        $project_id = $board->project_id;
+
+        $project_members = DB::table('project_member')->where('project_id', $project_id)->get();
+        $users = [];
+        foreach ($project_members as $member) {
+            array_push($users, (object)[
+                'user_id' => $member->user_id,
+                'name' => User::find($member->user_id)->name,
+                'role' => $member->role,
+            ]);
+        }
+
+
+            return Inertia::render('Task/Edit', ['task' => $task,
+            'priorities' => $priorities,
+            'members' => $users,
+            'assigned_to_me' => fn() => $task->assigned_to == Auth::id()]);
     }
 
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, Task $task)
     {
-        //
+        $assign_to_me = $request->input('assign_to_me');
+
+        $data = $request->validate([
+            'name' => 'required',
+            'description' => 'required',
+            'deadline' => ['required', 'after_or_equal:' . now()->format('Y-m-d')],
+            'priority' => ['required', Rule::in(array_column(TaskPriority::cases(), 'value'))],
+            'assigned_to' => Rule::requiredIf($assign_to_me == false),
+        ]);
+
+        if ($assign_to_me) {
+            $data['assigned_to'] = Auth::id();
+        }
+
+        $task->update($data);
+
+        return redirect('/');
     }
 
 
