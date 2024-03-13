@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
@@ -16,6 +17,11 @@ class ProjectController extends Controller
     protected $rules = [
         'name' => ['required'],
         'description' => ['required']
+    ];
+
+    protected $rulesMember = [
+        'email' => ['required'],
+        'role' => ['required']
     ];
 
     public function index(Request $request)
@@ -43,10 +49,26 @@ class ProjectController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Project $project)
+    public function show(Project $project, Request $request)
     {
         //
-        return Inertia::render("Project/Show", ['project' => compact($project)]);
+        $boards = $project->boards;
+        $owner = $project->owner;
+        $userLoggedIn = $request->user();
+        $members = DB::table('project_member')->where("project_id", $project->id)->get();
+        $users = [];
+        foreach ($members as $member) {
+            /*if($member->id === $userLoggedIn->id){
+                $permission = true;
+            }*/
+            $users[] = (object)[
+                'user_id' => $member->user_id,
+                'name' => User::find($member->user_id)->name,
+                'role' => $member->role,
+            ];
+        }
+        return Inertia::render("Project/Show", ['project' => $project, 'boards' => $boards, 'owner' => $owner,
+            'loggedInUser' => $userLoggedIn, 'members' => $users]);
     }
 
     /**
@@ -69,5 +91,17 @@ class ProjectController extends Controller
         //
         $project->delete();
         return Redirect::route("project.index");
+    }
+
+    public function addMemberToProject(Project $project, Request $request){
+        $this->validate($request, $this->rulesMember);
+        $data = $request::createFromGlobals()->all();
+        $user = DB::table('users')->where('email',$data['email'])->first();
+        DB::table("project_member")->insert([
+            "project_id" => $project->id,
+            "user_id" => $user->id,
+            "role" => $data['role']
+        ]);
+        return Redirect::route("projects.show", ['project' => $project]);
     }
 }

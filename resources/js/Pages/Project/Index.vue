@@ -28,16 +28,15 @@ function submitCreate() {
             <li v-for="project in projects" :key="project.id" class="flex justify-between gap-x-6 py-5">
                 <div class="flex min-w-0 gap-x-4">
                     <div class="min-w-0 flex-auto">
-                        <p class="text-sm font-semibold leading-6 text-gray-900">{{ project.name }}</p>
+                        <button @click="show(project)" class="text-sm font-semibold leading-6 text-gray-900">{{ project.name }}</button>
                         <p class="mt-1 truncate text-xs leading-5 text-gray-500">{{ project.description }}</p>
                     </div>
                 </div>
                 <div class="hidden shrink-0 sm:flex sm:flex-row sm:items-end gap-4">
-                    <button @click="editOpen = true, editProject(project, false)" class="text-sm leading-6 text-gray-900">
+                    <button @click="editOpen = true, editProject(project)" class="text-sm leading-6 text-gray-900">
                         Edit
                     </button>
-                    <button @click="editProject(project, true), destroy" class="text-sm leading-6 text-gray-900">Delete</button>
-                    <button class="text-sm leading-6 text-gray-900">Add members</button>
+                    <button @click="destroy(project)" class="text-sm leading-6 text-gray-900">Delete</button>
                 </div>
             </li>
         </ul>
@@ -148,24 +147,28 @@ import {router} from "@inertiajs/vue3";
 export default {
     data() {
         return {
-            selectedProject: null, // The selected project
+            selectedProject: null,
+            deleteProject: null,
+            showProject: null// The selected project
         };
     },
     methods: {
-        editProject(project, d) {
+        editProject(project) {
             this.selectedProject = Object.assign({}, project);
-            if(d){
-                this.destroy();
-            }
         },
         submitEdit() {
             router.put(`/projects/${this.selectedProject.id}/update`, this.selectedProject)
             console.log(this.selectedProject);
         },
-        destroy(){
-            router.delete(`/projects/${this.selectedProject.id}/delete`);
+        destroy(project){
+            this.deleteProject = Object.assign({}, project)
+            router.delete(`/projects/${this.deleteProject.id}/delete`);
             console.log(this.selectedProject);
-        }
+        },
+        show(project){
+            this.showProject = Object.assign({}, project);
+            router.get(`/projects/${this.showProject.id}/show`)
+        },
     },
 };
 </script>

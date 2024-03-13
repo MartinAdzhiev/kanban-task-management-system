@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
 
             $table->bigInteger('project_id')->unsigned();
-            $table->bigInteger('member_id')->unsigned();
+            $table->bigInteger('user_id')->unsigned();
 
             $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
-            $table->foreign('member_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
             $table->string('role')->default("");
 

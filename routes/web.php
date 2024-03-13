@@ -40,3 +40,5 @@ Route::get("/projects/list", [ProjectController::class, 'index'])->name("project
 Route::post("/projects/store", [ProjectController::class, 'store'])->name("project.store");
 Route::put("/projects/{project}/update", [ProjectController::class, 'update'])->name("projects.update");
 Route::delete("/projects/{project}/delete", [ProjectController::class, 'destroy'])->name("projects.destroy");
+Route::get("/projects/{project}/show", [ProjectController::class, 'show'])->name("projects.show");
+Route::post("/projects/{project}/addMember", [ProjectController::class, 'addMemberToProject'])->name("projects.addMember");
