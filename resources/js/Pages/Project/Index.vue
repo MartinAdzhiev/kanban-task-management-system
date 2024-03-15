@@ -18,7 +18,7 @@ const form = reactive({
 })
 
 function submitCreate() {
-    router.post('/projects/store', form)
+    router.post('/project/store', form)
 }
 </script>
 
@@ -147,9 +147,7 @@ import {router} from "@inertiajs/vue3";
 export default {
     data() {
         return {
-            selectedProject: null,
-            deleteProject: null,
-            showProject: null// The selected project
+            selectedProject: null
         };
     },
     methods: {
@@ -157,17 +155,15 @@ export default {
             this.selectedProject = Object.assign({}, project);
         },
         submitEdit() {
-            router.put(`/projects/${this.selectedProject.id}/update`, this.selectedProject)
-            console.log(this.selectedProject);
+            router.put(`/project/${this.selectedProject.id}/update`, this.selectedProject)
         },
         destroy(project){
-            this.deleteProject = Object.assign({}, project)
-            router.delete(`/projects/${this.deleteProject.id}/delete`);
-            console.log(this.selectedProject);
+            this.selectedProject = Object.assign({}, project)
+            router.delete(`/project/${this.selectedProject.id}/delete`);
         },
         show(project){
-            this.showProject = Object.assign({}, project);
-            router.get(`/projects/${this.showProject.id}/show`)
+            this.selectedProject = Object.assign({}, project);
+            router.get(`/project/${this.selectedProject.id}/show`)
         },
     },
 };

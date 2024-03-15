@@ -100,8 +100,10 @@ class ProjectController extends Controller
         DB::table("project_member")->insert([
             "project_id" => $project->id,
             "user_id" => $user->id,
-            "role" => $data['role']
+            "role" => $data['role'],
+            "created_at" => date("Y-m-d H-i-s"),
+            "updated_at" => date("Y-m-d H-i-s")
         ]);
-        return Redirect::route("projects.show", ['project' => $project]);
+        return Redirect::route("project.show", ['project' => $project]);
     }
 }

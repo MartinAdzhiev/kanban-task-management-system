@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BoardController;
 use App\Http\Controllers\ProjectController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -36,9 +37,14 @@ Route::middleware([
 });
 
 //Project
-Route::get("/projects/list", [ProjectController::class, 'index'])->name("project.index");
-Route::post("/projects/store", [ProjectController::class, 'store'])->name("project.store");
-Route::put("/projects/{project}/update", [ProjectController::class, 'update'])->name("projects.update");
-Route::delete("/projects/{project}/delete", [ProjectController::class, 'destroy'])->name("projects.destroy");
-Route::get("/projects/{project}/show", [ProjectController::class, 'show'])->name("projects.show");
-Route::post("/projects/{project}/addMember", [ProjectController::class, 'addMemberToProject'])->name("projects.addMember");
+Route::get("/project/list", [ProjectController::class, 'index'])->name("project.index");
+Route::post("/project/store", [ProjectController::class, 'store'])->name("project.store");
+Route::put("/project/{project}/update", [ProjectController::class, 'update'])->name("project.update");
+Route::delete("/project/{project}/delete", [ProjectController::class, 'destroy'])->name("project.destroy");
+Route::get("/project/{project}/show", [ProjectController::class, 'show'])->name("project.show");
+Route::post("/project/{project}/addMember", [ProjectController::class, 'addMemberToProject'])->name("project.addMember");
+
+//Board
+Route::post("/project/{project}/board/store", [BoardController::class, 'store'])->name('board.store');
+Route::put("/board/{board}/update", [BoardController::class, 'update'])->name('board.update');
+Route::delete("/board/{board}/delete", [BoardController::class, 'destroy'])->name('board.destroy');
