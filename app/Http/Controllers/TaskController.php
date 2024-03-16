@@ -16,11 +16,27 @@ use Inertia\Inertia;
 class TaskController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $tasks = Task::where('assigned_to', Auth::id())->get();
+        $priorities = array_column(TaskPriority::cases(), 'value');
 
-        return Inertia::render('Task/Index', ['tasks' => $tasks]);
+        $query = Task::query()->where('assigned_to', Auth::id());
+
+        if (isset($request->priority) && ($request->priority != null))
+        {
+            $query->where('priority', $request->priority);
+        }
+
+        if (isset($request->deadline) && ($request->deadline != null))
+        {
+            $query->where('deadline', $request->deadline);
+        }
+
+        $tasks = $query->get();
+
+
+        return Inertia::render('Task/Index', ['tasks' => $tasks,
+                                                        'priorities' => $priorities]);
     }
 
 
