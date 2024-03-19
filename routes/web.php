@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\BoardController;
+use App\Http\Controllers\ProjectController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -37,6 +39,21 @@ Route::middleware([
 });
 
 
+//Project
+Route::get("/project/list", [ProjectController::class, 'index'])->name("project.index");
+Route::post("/project/store", [ProjectController::class, 'store'])->name("project.store");
+Route::put("/project/{project}/update", [ProjectController::class, 'update'])->name("project.update");
+Route::delete("/project/{project}/delete", [ProjectController::class, 'destroy'])->name("project.destroy");
+Route::get("/project/{project}/show", [ProjectController::class, 'show'])->name("project.show");
+Route::post("/project/{project}/addMember", [ProjectController::class, 'addMemberToProject'])->name("project.addMember");
+
+//Board
+Route::post("/project/{project}/board/store", [BoardController::class, 'store'])->name('board.store');
+Route::put("/board/{board}/update", [BoardController::class, 'update'])->name('board.update');
+Route::delete("/board/{board}/delete", [BoardController::class, 'destroy'])->name('board.destroy');
+Route::get("/board/{board}/show", [BoardController::class, 'show'])->name('board.show');
+
+
 //Column
 //Route::get('/column', [ColumnController::class, 'index'])->name('column.index');
 Route::get('/board/{board}/column/create', [ColumnController::class, 'create'])->name('column.create');
@@ -52,3 +69,4 @@ Route::post('/task', [TaskController::class, 'store'])->name('task.store');
 Route::get('/task/{task}/edit', [TaskController::class, 'edit'])->name('task.edit');
 Route::put('/task/{task}/update', [TaskController::class, 'update'])->name('task.update');
 Route::delete('/task/{task}/delete', [TaskController::class, 'destroy'])->name('task.destroy');
+
