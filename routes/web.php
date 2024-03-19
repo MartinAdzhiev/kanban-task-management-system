@@ -48,3 +48,4 @@ Route::post("/project/{project}/addMember", [ProjectController::class, 'addMembe
 Route::post("/project/{project}/board/store", [BoardController::class, 'store'])->name('board.store');
 Route::put("/board/{board}/update", [BoardController::class, 'update'])->name('board.update');
 Route::delete("/board/{board}/delete", [BoardController::class, 'destroy'])->name('board.destroy');
+Route::get("/board/{board}/show", [BoardController::class, 'show'])->name('board.show');

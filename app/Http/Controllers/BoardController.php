@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Board;
 use App\Models\Project;
+use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Inertia\Inertia;
+use function PHPUnit\Framework\isEmpty;
 
 class BoardController extends Controller
 {
@@ -60,9 +63,20 @@ class BoardController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Board $board)
     {
         //
+        $columns = $board->columns;
+        $tasks = [];
+        foreach ($columns as $col){
+            $tmp = DB::table("tasks")->where("column_id", $col->id)->get();
+            if(!$tmp->isEmpty()){
+                foreach ($tmp as $t){
+                    $tasks[] = $t;
+                }
+            }
+        }
+        return Inertia::render("Board/Show", ['board' => $board, 'columns' => $columns, 'tasks' => $tasks]);
     }
 
     /**
