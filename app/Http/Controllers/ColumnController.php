@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Board;
 use App\Models\Column;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
 class ColumnController extends Controller
@@ -18,20 +19,21 @@ class ColumnController extends Controller
 
     public function create(Board $board)
     {
-        return Inertia::render('Column/Create', ['board' => $board]);
+//        return Inertia::render('Column/Create', ['board' => $board]);
     }
 
 
-    public function store(Request $request)
+    public function store(Request $request, Board $board)
     {
         $data = $request->validate([
-            'board_id' => 'required',
             'name' => 'required',
         ]);
 
+        $data['board_id'] = $board->id;
+
         Column::create($data);
 
-        return redirect('/');
+        return Redirect::route("board.show", ['board' => $board->id]);
     }
 
 
@@ -43,7 +45,7 @@ class ColumnController extends Controller
 
     public function edit(Column $column)
     {
-        return Inertia::render('Column/Edit', ['column' => $column]);
+//        return Inertia::render('Column/Edit', ['column' => $column]);
     }
 
 
@@ -55,7 +57,7 @@ class ColumnController extends Controller
 
         $column->update($data);
 
-        return redirect('/');
+        return Redirect::route("board.show", ['board' => $column->board]);
     }
 
 
@@ -63,6 +65,6 @@ class ColumnController extends Controller
     {
         $column->delete();
 
-        return redirect('/');
+        return Redirect::route("board.show", ['board' => $column->board]);
     }
 }

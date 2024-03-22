@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
@@ -63,12 +64,12 @@ class TaskController extends Controller
     }
 
 
-    public function store(Request $request)
+    public function store(Request $request, Column $column)
     {
         $assign_to_me = $request->input('assign_to_me');
 
         $data = $request->validate([
-            'column_id' => 'required',
+//            'column_id' => 'required',
             'name' => 'required',
             'description' => 'required',
             'deadline' => ['required', 'after_or_equal:' . now()->format('Y-m-d')],
@@ -76,14 +77,18 @@ class TaskController extends Controller
             'assigned_to' => Rule::requiredIf($assign_to_me == false),
         ]);
 
+        $data['column_id'] = $column->id;
+
         if ($assign_to_me) {
             $data['assigned_to'] = Auth::id();
         }
 
+//        dd($data);
+
 
         Task::create($data);
 
-        return redirect('/task');
+        return Redirect::route("board.show", ['board' => $column->board_id]);
     }
 
 
@@ -136,8 +141,10 @@ class TaskController extends Controller
         }
 
         $task->update($data);
+        $column = Column::find($task->column_id);
+        $board = $column->board_id;
 
-        return redirect('/');
+        return Redirect::route("board.show", ['board' => $board]);
     }
 
 
@@ -145,6 +152,9 @@ class TaskController extends Controller
     {
         $task->delete();
 
-        return redirect('/');
+        $column = Column::find($task->column_id);
+        $board = $column->board_id;
+
+        return Redirect::route("board.show", ['board' => $board]);
     }
 }

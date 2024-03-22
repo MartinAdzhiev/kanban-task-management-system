@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\TaskPriority;
 use App\Models\Board;
 use App\Models\Project;
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -76,7 +79,26 @@ class BoardController extends Controller
                 }
             }
         }
-        return Inertia::render("Board/Show", ['board' => $board, 'columns' => $columns, 'tasks' => $tasks]);
+
+        $priorities = array_column(TaskPriority::cases(), 'value');
+
+        $project_members = DB::table('project_member')->where('project_id', $board->project_id)->get();
+        $users = [];
+        foreach ($project_members as $member) {
+            array_push($users, (object)[
+                'user_id' => $member->user_id,
+                'name' => User::find($member->user_id)->name,
+                'role' => $member->role,
+            ]);
+        }
+
+
+        return Inertia::render("Board/Show", ['board' => $board,
+            'columns' => $columns,
+            'tasks' => $tasks,
+            'priorities' => $priorities,
+            'members' => $users,
+            'loggedInUser' => Auth::id()]);
     }
 
     /**
