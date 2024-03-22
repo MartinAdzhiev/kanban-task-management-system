@@ -65,7 +65,7 @@ Route::delete('/column/{column}/delete', [ColumnController::class, 'destroy'])->
 //Task
 Route::get('/task', [TaskController::class, 'index'])->name('task.index');
 Route::get('board/{board}/column/{column}/task/create', [TaskController::class, 'create'])->name('task.create');
-Route::post('/task', [TaskController::class, 'store'])->name('task.store');
+Route::post('/column/{column}/task/store', [TaskController::class, 'store'])->name('task.store');
 Route::get('/task/{task}/edit', [TaskController::class, 'edit'])->name('task.edit');
 Route::put('/task/{task}/update', [TaskController::class, 'update'])->name('task.update');
 Route::delete('/task/{task}/delete', [TaskController::class, 'destroy'])->name('task.destroy');
