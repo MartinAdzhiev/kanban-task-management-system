@@ -57,7 +57,7 @@ Route::get("/board/{board}/show", [BoardController::class, 'show'])->name('board
 //Column
 //Route::get('/column', [ColumnController::class, 'index'])->name('column.index');
 Route::get('/board/{board}/column/create', [ColumnController::class, 'create'])->name('column.create');
-Route::post('/column', [ColumnController::class, 'store'])->name('column.store');
+Route::post('/board/{board}/column/store', [ColumnController::class, 'store'])->name('column.store');
 Route::get('/column/{column}/edit', [ColumnController::class, 'edit'])->name('column.edit');
 Route::put('/column/{column}/update', [ColumnController::class, 'update'])->name('column.update');
 Route::delete('/column/{column}/delete', [ColumnController::class, 'destroy'])->name('column.destroy');
