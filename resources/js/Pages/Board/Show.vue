@@ -272,13 +272,13 @@ function submitCreateColumn() {
                                         </div>
 
                                         <div class="mt-2">
-                                            <label for="assign_to_me">Assign to me</label>
-                                            <input type="checkbox" id="assign_to_me" v-model="taskForm.assign_to_me"/>
+                                            <label for="is_assigned_to_owner">Assign to me</label>
+                                            <input type="checkbox" id="is_assigned_to_owner" v-model="taskForm.is_assigned_to_owner"/>
                                         </div>
 
                                         <div class="mt-2">
                                             <label for="assignee">Assign To:</label>
-                                            <select :disabled="taskForm.assign_to_me" id="assignee"
+                                            <select :disabled="taskForm.is_assigned_to_owner" id="assignee"
                                                     v-model="taskForm.assigned_to">
                                                 <option v-for="member in members" :value="member.user_id">{{
                                                         member.name
@@ -341,8 +341,9 @@ function submitCreateColumn() {
                                         </div>
 
                                         <div class="mt-2">
-                                            <label for="deadline">Due Date:</label>
-                                            <input type="date" id="deadline" v-model="selectedTask.deadline"/>
+                                            <label for="deadline">Current Due Date: {{selectedTask.deadline.slice(0,10)}}</label>
+                                            <br>
+                                            <input type="date" id="deadline" v-model="selectedTask.deadline">
                                         </div>
 
                                         <div class="mt-2">
@@ -355,15 +356,14 @@ function submitCreateColumn() {
                                         </div>
 
                                         <div class="mt-2">
-                                            <label for="assign_to_me">Assign to me</label>
-                                            <input type="checkbox" id="assign_to_me"
-                                                   v-if="selectedTask.assigned_to === loggedInUser" checked/>
-                                            <input type="checkbox" id="assign_to_me" v-else/>
+                                            <label for="is_assigned_to_owner">Assign to me</label>
+                                            <input type="checkbox" id="is_assigned_to_owner"
+                                            v-model="selectedTask.is_assigned_to_owner"/>
                                         </div>
 
                                         <div class="mt-2">
                                             <label for="assignee">Assign To:</label>
-                                            <select :disabled="taskForm.assign_to_me === true" id="assignee"
+                                            <select :disabled="selectedTask.is_assigned_to_owner" id="assignee"
                                                     v-model="selectedTask.assigned_to">
                                                 <option v-for="member in members" :value="member.user_id">{{
                                                         member.name
@@ -455,7 +455,7 @@ export default {
                 description: null,
                 deadline: null,
                 priority: null,
-                assign_to_me: false,
+                is_assigned_to_owner: (this.selectedTask != null && this.selectedTask.is_assigned_to_owner === true) ? 1 : 0,
                 assigned_to: null,
             }),
             createTaskOpen: ref(false),
@@ -463,6 +463,7 @@ export default {
             deleteTaskConfirm: ref(false),
         };
     },
+
     methods: {
         //column
         editColumn(col) {
@@ -479,8 +480,8 @@ export default {
         },
 
         //task
-        createTask(col) {
-            this.selectedColumn = Object.assign({}, col);
+        createTask(task) {
+            this.selectedColumn = Object.assign({}, task);
         },
         submitCreateTask() {
             router.post(`/column/${this.selectedColumn.id}/task/store`, this.taskForm);

@@ -7,6 +7,7 @@ use App\Models\Board;
 use App\Models\Column;
 use App\Models\Task;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -66,7 +67,7 @@ class TaskController extends Controller
 
     public function store(Request $request, Column $column)
     {
-        $assign_to_me = $request->input('assign_to_me');
+        $is_assigned_to_owner = $request->input('is_assigned_to_owner');
 
         $data = $request->validate([
 //            'column_id' => 'required',
@@ -74,14 +75,16 @@ class TaskController extends Controller
             'description' => 'required',
             'deadline' => ['required', 'after_or_equal:' . now()->format('Y-m-d')],
             'priority' => ['required', Rule::in(array_column(TaskPriority::cases(), 'value'))],
-            'assigned_to' => Rule::requiredIf($assign_to_me == false),
+            'assigned_to' => Rule::requiredIf($is_assigned_to_owner == false),
         ]);
 
         $data['column_id'] = $column->id;
 
-        if ($assign_to_me) {
+        if ($is_assigned_to_owner) {
             $data['assigned_to'] = Auth::id();
+            $data['is_assigned_to_owner'] = true;
         }
+
 
 //        dd($data);
 
@@ -126,19 +129,29 @@ class TaskController extends Controller
 
     public function update(Request $request, Task $task)
     {
-        $assign_to_me = $request->input('assign_to_me');
+        $is_assigned_to_owner = $request->input('is_assigned_to_owner');
+//        dd($is_assigned_to_owner);
 
         $data = $request->validate([
             'name' => 'required',
             'description' => 'required',
             'deadline' => ['required', 'after_or_equal:' . now()->format('Y-m-d')],
             'priority' => ['required', Rule::in(array_column(TaskPriority::cases(), 'value'))],
-            'assigned_to' => Rule::requiredIf($assign_to_me == false),
+            'assigned_to' => Rule::requiredIf($is_assigned_to_owner == false),
         ]);
+//        $data['deadline'] = date_create_from_format('Y/m/d:00:00:00', $data['deadline']);
 
-        if ($assign_to_me) {
+        $data['deadline'] = Carbon::parse($data['deadline'])->startOfDay();
+
+
+        if ($is_assigned_to_owner) {
             $data['assigned_to'] = Auth::id();
+            $data['is_assigned_to_owner'] = true;
         }
+        else {
+            $data['is_assigned_to_owner'] = false;
+        }
+
 
         $task->update($data);
         $column = Column::find($task->column_id);
