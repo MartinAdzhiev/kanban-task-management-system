@@ -56,17 +56,17 @@ Route::get("/board/{board}/show", [BoardController::class, 'show'])->name('board
 
 //Column
 //Route::get('/column', [ColumnController::class, 'index'])->name('column.index');
-Route::get('/board/{board}/column/create', [ColumnController::class, 'create'])->name('column.create');
-Route::post('/board/{board}/column/store', [ColumnController::class, 'store'])->name('column.store');
-Route::get('/column/{column}/edit', [ColumnController::class, 'edit'])->name('column.edit');
-Route::put('/column/{column}/update', [ColumnController::class, 'update'])->name('column.update');
-Route::delete('/column/{column}/delete', [ColumnController::class, 'destroy'])->name('column.destroy');
+//Route::get('/board/{board}/column/create', [ColumnController::class, 'create'])->name('column.create');
+Route::post('/project/{project}/board/{board}/column/store', [ColumnController::class, 'store'])->name('column.store');
+//Route::get('/column/{column}/edit', [ColumnController::class, 'edit'])->name('column.edit');
+Route::put('/project/{project}/board/{board}/column/{column}/update', [ColumnController::class, 'update'])->name('column.update');
+Route::delete('/project/{project}/board/{board}/column/{column}/delete', [ColumnController::class, 'destroy'])->name('column.destroy');
 
 //Task
 Route::get('/task', [TaskController::class, 'index'])->name('task.index');
 Route::get('board/{board}/column/{column}/task/create', [TaskController::class, 'create'])->name('task.create');
-Route::post('/column/{column}/task/store', [TaskController::class, 'store'])->name('task.store');
+Route::post('/project/{project}/board/{board}/column/{column}/task/store', [TaskController::class, 'store'])->name('task.store');
 Route::get('/task/{task}/edit', [TaskController::class, 'edit'])->name('task.edit');
-Route::put('/task/{task}/update', [TaskController::class, 'update'])->name('task.update');
-Route::delete('/task/{task}/delete', [TaskController::class, 'destroy'])->name('task.destroy');
+Route::put('/project/{project}/board/{board}/column/{column}/task/{task}/update', [TaskController::class, 'update'])->name('task.update');
+Route::delete('/project/{project}/board/{board}/column/{column}/task/{task}/delete', [TaskController::class, 'destroy'])->name('task.destroy');
 

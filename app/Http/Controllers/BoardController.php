@@ -93,7 +93,9 @@ class BoardController extends Controller
         }
 
 
-        return Inertia::render("Board/Show", ['board' => $board,
+
+        return Inertia::render("Board/Show", ['project' => $board->project()->get()->first(),
+            'board' => $board,
             'columns' => $columns,
             'tasks' => $tasks,
             'priorities' => $priorities,
