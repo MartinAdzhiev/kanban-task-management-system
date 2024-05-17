@@ -58,7 +58,7 @@ function submitCreateColumn() {
     <!-- Kanban Board Container -->
     <div class="flex justify-center items-start p-4 gap-4">
         <!-- Kanban Column -->
-        <div class="bg-gray-100 p-4 rounded basis-full" v-for="col in columns" :key="col.id">
+        <div class="bg-gray-100 p-4 rounded basis-full" v-for="col in columns" :key="col.id" @dragover.prevent @drop="droppedTask(col)">
             <div class="font-bold mb-2 flex justify-start space-x-8">
                 <h2 v-text="col.name"></h2>
                 <button @click="editColumnOpen = true, editColumn(col)">Edit</button>
@@ -67,7 +67,8 @@ function submitCreateColumn() {
             <!-- Tasks -->
             <div class="space-y-2">
                 <div v-for="task in tasks" :key="task.id">
-                    <div class="bg-white p-2 rounded shadow" v-if="task.column_id === col.id">
+                    <div class="bg-white p-2 rounded shadow" v-if="task.column_id === col.id" draggable="true"
+                         @dragstart="dragStartTask(task)" >
                         <h3 v-text="task.name"></h3>
                         <button @click="editTaskOpen = true, editTask(task)">Edit</button>
                         <button @click="deleteTaskConfirm = true, destroyTask(task)">Delete</button>
@@ -496,6 +497,13 @@ export default {
         },
         confirmDestroyTask() {
             router.delete(`/task/${this.selectedTask.id}/delete`, this.selectedTask);
+        },
+        dragStartTask(task) {
+            this.selectedTask = Object.assign({}, task);
+        },
+        droppedTask(col) {
+            this.selectedColumn = Object.assign({}, col)
+            router.put(`/column/${this.selectedColumn.id}/task/${this.selectedTask.id}/changeTaskInColumn`)
         },
     },
 

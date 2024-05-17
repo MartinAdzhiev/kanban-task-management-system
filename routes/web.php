@@ -69,4 +69,5 @@ Route::post('/column/{column}/task/store', [TaskController::class, 'store'])->na
 Route::get('/task/{task}/edit', [TaskController::class, 'edit'])->name('task.edit');
 Route::put('/task/{task}/update', [TaskController::class, 'update'])->name('task.update');
 Route::delete('/task/{task}/delete', [TaskController::class, 'destroy'])->name('task.destroy');
+Route::put('/column/{column}/task/{task}/changeTaskInColumn', [TaskController::class, 'changeTaskInColumn'])->name('task.change');
 
