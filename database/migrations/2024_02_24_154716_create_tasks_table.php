@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string("name")->default("");
             $table->text("description")->default("");
             $table->bigInteger("assigned_to")->unsigned()->default(0);
+            $table->boolean('is_assigned_to_owner')->default(false);
             $table->foreign("assigned_to")->references("id")->on("users")->onDelete("cascade");
             $table->bigInteger("column_id")->unsigned()->default(0);
             $table->foreign("column_id")->references("id")->on("columns")->onDelete("cascade");

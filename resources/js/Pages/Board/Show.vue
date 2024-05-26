@@ -4,6 +4,7 @@ import {router} from "@inertiajs/vue3";
 import {Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot} from "@headlessui/vue";
 
 const props = defineProps({
+    project: Object,
     board: Object,
     columns: Object,
     tasks: Object,
@@ -20,9 +21,10 @@ const deleteColumnConfirm = ref(false)
 // const editTaskOpen = ref(false)
 // const deleteTaskConfirm = ref(false)
 
-const {board, tasks, columns, priorities, members} = toRefs(props)
+const {project, board, tasks, columns, priorities, members} = toRefs(props)
 console.log(columns.value)
 console.log(tasks.value)
+console.log(project.value.id)
 
 const columnForm = reactive({
     name: null,
@@ -38,7 +40,7 @@ const columnForm = reactive({
 // })
 
 function submitCreateColumn() {
-    router.post(`/board/${board.value.id}/column/store`, columnForm)
+    router.post(`/project/${project.value.id}/board/${board.value.id}/column/store`, columnForm)
 }
 
 // function submitCreateTask(column){
@@ -52,7 +54,7 @@ function submitCreateColumn() {
             <h1 class="text-3xl font-bold tracking-tight text-gray-900">{{ board.name }}</h1>
         </div>
         <div class="my-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 flex gap-4">
-            <button @click="createColumnOpen = true">Add new column</button>
+            <button v-if="project.owner_id === loggedInUser" @click="createColumnOpen = true">Add new column</button>
         </div>
     </header>
     <!-- Kanban Board Container -->
@@ -61,23 +63,24 @@ function submitCreateColumn() {
         <div class="bg-gray-100 p-4 rounded basis-full" v-for="col in columns" :key="col.id" @dragover.prevent @drop="droppedTask(col)">
             <div class="font-bold mb-2 flex justify-start space-x-8">
                 <h2 v-text="col.name"></h2>
-                <button @click="editColumnOpen = true, editColumn(col)">Edit</button>
-                <button @click="deleteColumnConfirm = true, destroyColumn(col)">Delete</button>
+                <button v-if="project.owner_id === loggedInUser" @click="editColumnOpen = true, editColumn(col)">Edit</button>
+                <button v-if="project.owner_id === loggedInUser" @click="deleteColumnConfirm = true, destroyColumn(col)">Delete</button>
             </div>
             <!-- Tasks -->
             <div class="space-y-2">
                 <div v-for="task in tasks" :key="task.id">
-                    <div class="bg-white p-2 rounded shadow" v-if="task.column_id === col.id" draggable="true"
+                    <div class="bg-white p-2 rounded shadow" v-if="task.column_id === col.id"
+                         draggable="true"
                          @dragstart="dragStartTask(task)" >
                         <h3 v-text="task.name"></h3>
-                        <button @click="editTaskOpen = true, editTask(task)">Edit</button>
-                        <button @click="deleteTaskConfirm = true, destroyTask(task)">Delete</button>
+                        <button v-if="project.owner_id === loggedInUser" @click="editTaskOpen = true, editTask(task)">Edit</button>
+                        <button v-if="project.owner_id === loggedInUser" @click="deleteTaskConfirm = true, destroyTask(task)">Delete</button>
                     </div>
                 </div>
                 <!-- Add more tasks here -->
 
             </div>
-            <button @click="createTaskOpen = true, createTask(col)">Add task</button>
+            <button v-if="project.owner_id === loggedInUser" @click="createTaskOpen = true, createTask(col)">Add task</button>
         </div>
     </div>
 
@@ -131,7 +134,7 @@ function submitCreateColumn() {
 
     <!--Column edit form-->
     <TransitionRoot as="template" :show="editColumnOpen">
-        <Dialog as="form" class="relative z-10" @close="editColumnOpen = false" @submit.prevent="submitEditColumn">
+        <Dialog as="form" class="relative z-10" @close="editColumnOpen = false" @submit.prevent="submitEditColumn(project, board)">
             <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0" enter-to="opacity-100"
                              leave="ease-in duration-200" leave-from="opacity-100" leave-to="opacity-0">
                 <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"/>
@@ -180,7 +183,7 @@ function submitCreateColumn() {
     <!--Column delete confirm-->
     <TransitionRoot as="template" :show="deleteColumnConfirm">
         <Dialog as="form" class="relative z-10" @close="deleteColumnConfirm = false"
-                @submit.prevent="confirmDestroyColumn">
+                @submit.prevent="confirmDestroyColumn(project, board)">
             <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0" enter-to="opacity-100"
                              leave="ease-in duration-200" leave-from="opacity-100" leave-to="opacity-0">
                 <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"/>
@@ -228,7 +231,7 @@ function submitCreateColumn() {
 
     <!--Task create form-->
     <TransitionRoot as="template" :show="createTaskOpen">
-        <Dialog as="form" class="relative z-10" @close="createTaskOpen = false" @submit.prevent="submitCreateTask">
+        <Dialog as="form" class="relative z-10" @close="createTaskOpen = false" @submit.prevent="submitCreateTask(project, board)">
             <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0" enter-to="opacity-100"
                              leave="ease-in duration-200" leave-from="opacity-100" leave-to="opacity-0">
                 <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"/>
@@ -273,13 +276,13 @@ function submitCreateColumn() {
                                         </div>
 
                                         <div class="mt-2">
-                                            <label for="assign_to_me">Assign to me</label>
-                                            <input type="checkbox" id="assign_to_me" v-model="taskForm.assign_to_me"/>
+                                            <label for="is_assigned_to_owner">Assign to me</label>
+                                            <input type="checkbox" id="is_assigned_to_owner" v-model="taskForm.is_assigned_to_owner"/>
                                         </div>
 
                                         <div class="mt-2">
                                             <label for="assignee">Assign To:</label>
-                                            <select :disabled="taskForm.assign_to_me" id="assignee"
+                                            <select :disabled="taskForm.is_assigned_to_owner" id="assignee"
                                                     v-model="taskForm.assigned_to">
                                                 <option v-for="member in members" :value="member.user_id">{{
                                                         member.name
@@ -311,7 +314,7 @@ function submitCreateColumn() {
 
     <!--Task edit form-->
     <TransitionRoot as="template" :show="editTaskOpen">
-        <Dialog as="form" class="relative z-10" @close="editTaskOpen = false" @submit.prevent="submitEditTask">
+        <Dialog as="form" class="relative z-10" @close="editTaskOpen = false" @submit.prevent="submitEditTask(project, board)">
             <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0" enter-to="opacity-100"
                              leave="ease-in duration-200" leave-from="opacity-100" leave-to="opacity-0">
                 <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"/>
@@ -342,8 +345,9 @@ function submitCreateColumn() {
                                         </div>
 
                                         <div class="mt-2">
-                                            <label for="deadline">Due Date:</label>
-                                            <input type="date" id="deadline" v-model="selectedTask.deadline"/>
+                                            <label for="deadline">Current Due Date: {{selectedTask.deadline.slice(0,10)}}</label>
+                                            <br>
+                                            <input type="date" id="deadline" v-model="selectedTask.deadline">
                                         </div>
 
                                         <div class="mt-2">
@@ -356,15 +360,14 @@ function submitCreateColumn() {
                                         </div>
 
                                         <div class="mt-2">
-                                            <label for="assign_to_me">Assign to me</label>
-                                            <input type="checkbox" id="assign_to_me"
-                                                   v-if="selectedTask.assigned_to === loggedInUser" checked/>
-                                            <input type="checkbox" id="assign_to_me" v-else/>
+                                            <label for="is_assigned_to_owner">Assign to me</label>
+                                            <input type="checkbox" id="is_assigned_to_owner"
+                                            v-model="selectedTask.is_assigned_to_owner"/>
                                         </div>
 
                                         <div class="mt-2">
                                             <label for="assignee">Assign To:</label>
-                                            <select :disabled="taskForm.assign_to_me === true" id="assignee"
+                                            <select :disabled="selectedTask.is_assigned_to_owner" id="assignee"
                                                     v-model="selectedTask.assigned_to">
                                                 <option v-for="member in members" :value="member.user_id">{{
                                                         member.name
@@ -396,7 +399,7 @@ function submitCreateColumn() {
 
     <!--Task delete confirm-->
     <TransitionRoot as="template" :show="deleteTaskConfirm">
-        <Dialog as="form" class="relative z-10" @close="deleteTaskConfirm = false" @submit.prevent="confirmDestroyTask">
+        <Dialog as="form" class="relative z-10" @close="deleteTaskConfirm = false" @submit.prevent="confirmDestroyTask(project, board)">
             <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0" enter-to="opacity-100"
                              leave="ease-in duration-200" leave-from="opacity-100" leave-to="opacity-0">
                 <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"/>
@@ -456,7 +459,7 @@ export default {
                 description: null,
                 deadline: null,
                 priority: null,
-                assign_to_me: false,
+                is_assigned_to_owner: (this.selectedTask != null && this.selectedTask.is_assigned_to_owner === true) ? 1 : 0,
                 assigned_to: null,
             }),
             createTaskOpen: ref(false),
@@ -464,42 +467,43 @@ export default {
             deleteTaskConfirm: ref(false),
         };
     },
+
     methods: {
         //column
         editColumn(col) {
             this.selectedColumn = Object.assign({}, col);
         },
-        submitEditColumn() {
-            router.put(`/column/${this.selectedColumn.id}/update`, this.selectedColumn)
+        submitEditColumn(project, board) {
+            router.put(`/project/${project.id}/board/${board.id}/column/${this.selectedColumn.id}/update`, this.selectedColumn)
         },
         destroyColumn(col) {
             this.selectedColumn = Object.assign({}, col)
         },
-        confirmDestroyColumn() {
-            router.delete(`/column/${this.selectedColumn.id}/delete`, this.selectedColumn);
+        confirmDestroyColumn(project, board) {
+            router.delete(`/project/${project.id}/board/${board.id}/column/${this.selectedColumn.id}/delete`, this.selectedColumn);
         },
 
         //task
-        createTask(col) {
-            this.selectedColumn = Object.assign({}, col);
+        createTask(task) {
+            this.selectedColumn = Object.assign({}, task);
         },
-        submitCreateTask() {
-            router.post(`/column/${this.selectedColumn.id}/task/store`, this.taskForm);
+        submitCreateTask(project, board) {
+            router.post(`/project/${project.id}/board/${board.id}/column/${this.selectedColumn.id}/task/store`, this.taskForm);
         },
         editTask(task) {
             this.selectedTask = Object.assign({}, task);
         },
-        submitEditTask() {
-            router.put(`/task/${this.selectedTask.id}/update`, this.selectedTask)
+        submitEditTask(project, board) {
+            router.put(`/project/${project.id}/board/${board.id}/column/${this.selectedTask.column_id}/task/${this.selectedTask.id}/update`, this.selectedTask)
         },
         destroyTask(task) {
             this.selectedTask = Object.assign({}, task)
         },
-        confirmDestroyTask() {
-            router.delete(`/task/${this.selectedTask.id}/delete`, this.selectedTask);
+        confirmDestroyTask(project, board) {
+            router.delete(`/project/${project.id}/board/${board.id}/column/${this.selectedTask.column_id}/task/${this.selectedTask.id}/delete`, this.selectedTask);
         },
         dragStartTask(task) {
-            this.selectedTask = Object.assign({}, task);
+                this.selectedTask = Object.assign({}, task);
         },
         droppedTask(col) {
             this.selectedColumn = Object.assign({}, col)

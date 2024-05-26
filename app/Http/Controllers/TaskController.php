@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Enums\TaskPriority;
 use App\Models\Board;
 use App\Models\Column;
+use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -41,121 +43,128 @@ class TaskController extends Controller
     }
 
 
-    public function create(Board $board, Column $column)
+//    public function create(Board $board, Column $column)
+//    {
+//        $priorities = array_column(TaskPriority::cases(), 'value');
+//        $project_id = $board->project_id;
+//
+//        $project_members = DB::table('project_member')->where('project_id', $project_id)->get();
+//        $users = [];
+//        foreach ($project_members as $member) {
+//            array_push($users, (object)[
+//                'user_id' => $member->user_id,
+//                'name' => User::find($member->user_id)->name,
+//                'role' => $member->role,
+//            ]);
+//        }
+//
+//
+//
+//        return Inertia::render('Task/Create',['column' => $column,
+//                                                        'priorities' => $priorities,
+//                                                        'members' => $users]);
+//    }
+
+
+    public function store(Request $request, Project $project, Board $board, Column $column)
     {
-        $priorities = array_column(TaskPriority::cases(), 'value');
-        $project_id = $board->project_id;
+        $this->authorize('create', [Task::class, $project]);
 
-        $project_members = DB::table('project_member')->where('project_id', $project_id)->get();
-        $users = [];
-        foreach ($project_members as $member) {
-            array_push($users, (object)[
-                'user_id' => $member->user_id,
-                'name' => User::find($member->user_id)->name,
-                'role' => $member->role,
-            ]);
-        }
-
-
-
-        return Inertia::render('Task/Create',['column' => $column,
-                                                        'priorities' => $priorities,
-                                                        'members' => $users]);
-    }
-
-
-    public function store(Request $request, Column $column)
-    {
-        $assign_to_me = $request->input('assign_to_me');
+        $is_assigned_to_owner = $request->input('is_assigned_to_owner');
 
         $data = $request->validate([
-//            'column_id' => 'required',
             'name' => 'required',
             'description' => 'required',
             'deadline' => ['required', 'after_or_equal:' . now()->format('Y-m-d')],
             'priority' => ['required', Rule::in(array_column(TaskPriority::cases(), 'value'))],
-            'assigned_to' => Rule::requiredIf($assign_to_me == false),
+            'assigned_to' => Rule::requiredIf($is_assigned_to_owner == false),
         ]);
 
         $data['column_id'] = $column->id;
 
-        if ($assign_to_me) {
+        if ($is_assigned_to_owner) {
             $data['assigned_to'] = Auth::id();
+            $data['is_assigned_to_owner'] = true;
         }
-
-//        dd($data);
 
 
         Task::create($data);
 
-        return Redirect::route("board.show", ['board' => $column->board_id]);
+        return Redirect::route("board.show", ['board' => $board->id]);
     }
 
 
-    public function show(string $id)
+//    public function show(string $id)
+//    {
+//        //
+//    }
+
+
+//    public function edit(Task $task)
+//    {
+//        $priorities = array_column(TaskPriority::cases(), 'value');
+//
+//        $column = Column::find($task->column_id);
+//        $board = Board::find($column->board_id);
+//        $project_id = $board->project_id;
+//
+//        $project_members = DB::table('project_member')->where('project_id', $project_id)->get();
+//        $users = [];
+//        foreach ($project_members as $member) {
+//            array_push($users, (object)[
+//                'user_id' => $member->user_id,
+//                'name' => User::find($member->user_id)->name,
+//                'role' => $member->role,
+//            ]);
+//        }
+//
+//
+//            return Inertia::render('Task/Edit', ['task' => $task,
+//            'priorities' => $priorities,
+//            'members' => $users,
+//            'assigned_to_me' => fn() => $task->assigned_to == Auth::id()]);
+//    }
+
+
+    public function update(Request $request, Project $project, Board $board, Column $column, Task $task)
     {
-        //
-    }
+        $this->authorize('update', [Task::class, $project]);
 
+        $is_assigned_to_owner = $request->input('is_assigned_to_owner');
 
-    public function edit(Task $task)
-    {
-        $priorities = array_column(TaskPriority::cases(), 'value');
-
-        $column = Column::find($task->column_id);
-        $board = Board::find($column->board_id);
-        $project_id = $board->project_id;
-
-        $project_members = DB::table('project_member')->where('project_id', $project_id)->get();
-        $users = [];
-        foreach ($project_members as $member) {
-            array_push($users, (object)[
-                'user_id' => $member->user_id,
-                'name' => User::find($member->user_id)->name,
-                'role' => $member->role,
-            ]);
-        }
-
-
-            return Inertia::render('Task/Edit', ['task' => $task,
-            'priorities' => $priorities,
-            'members' => $users,
-            'assigned_to_me' => fn() => $task->assigned_to == Auth::id()]);
-    }
-
-
-    public function update(Request $request, Task $task)
-    {
-        $assign_to_me = $request->input('assign_to_me');
 
         $data = $request->validate([
             'name' => 'required',
             'description' => 'required',
             'deadline' => ['required', 'after_or_equal:' . now()->format('Y-m-d')],
             'priority' => ['required', Rule::in(array_column(TaskPriority::cases(), 'value'))],
-            'assigned_to' => Rule::requiredIf($assign_to_me == false),
+            'assigned_to' => Rule::requiredIf($is_assigned_to_owner == false),
         ]);
 
-        if ($assign_to_me) {
+        $data['deadline'] = Carbon::parse($data['deadline'])->startOfDay();
+
+
+        if ($is_assigned_to_owner) {
             $data['assigned_to'] = Auth::id();
+            $data['is_assigned_to_owner'] = true;
+        }
+        else {
+            $data['is_assigned_to_owner'] = false;
         }
 
         $task->update($data);
-        $column = Column::find($task->column_id);
-        $board = $column->board_id;
 
-        return Redirect::route("board.show", ['board' => $board]);
+        return Redirect::route("board.show", ['board' => $board->id]);
     }
 
 
-    public function destroy(Task $task)
+    public function destroy(Project $project, Board $board, Column $column, Task $task)
     {
+        $this->authorize('delete', [Task::class, $project]);
+
         $task->delete();
 
-        $column = Column::find($task->column_id);
-        $board = $column->board_id;
-
-        return Redirect::route("board.show", ['board' => $board]);
+        return Redirect::route("board.show", ['board' => $board->id]);
     }
 
     public function changeTaskInColumn(Column $column, Task $task){

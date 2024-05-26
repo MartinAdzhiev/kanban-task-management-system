@@ -11,6 +11,7 @@ class Column extends Model
 
     public $guarded = [];
 
+
     public function board(){
         return $this->belongsTo('App\Models\Board', 'board_id');
     }
@@ -18,4 +19,5 @@ class Column extends Model
     public function tasks(){
         return $this->hasMany('App\Models\Task', 'column_id');
     }
+
 }
