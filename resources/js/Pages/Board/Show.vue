@@ -54,31 +54,33 @@ function submitCreateColumn() {
             <h1 class="text-3xl font-bold tracking-tight text-gray-900">{{ board.name }}</h1>
         </div>
         <div class="my-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 flex gap-4">
-            <button  @click="createColumnOpen = true">Add new column</button>
+            <button v-if="project.owner_id === loggedInUser" @click="createColumnOpen = true">Add new column</button>
         </div>
     </header>
     <!-- Kanban Board Container -->
     <div class="flex justify-center items-start p-4 gap-4">
         <!-- Kanban Column -->
-        <div class="bg-gray-100 p-4 rounded basis-full" v-for="col in columns" :key="col.id">
+        <div class="bg-gray-100 p-4 rounded basis-full" v-for="col in columns" :key="col.id" @dragover.prevent @drop="droppedTask(col)">
             <div class="font-bold mb-2 flex justify-start space-x-8">
                 <h2 v-text="col.name"></h2>
-                <button @click="editColumnOpen = true, editColumn(col)">Edit</button>
-                <button @click="deleteColumnConfirm = true, destroyColumn(col)">Delete</button>
+                <button v-if="project.owner_id === loggedInUser" @click="editColumnOpen = true, editColumn(col)">Edit</button>
+                <button v-if="project.owner_id === loggedInUser" @click="deleteColumnConfirm = true, destroyColumn(col)">Delete</button>
             </div>
             <!-- Tasks -->
             <div class="space-y-2">
                 <div v-for="task in tasks" :key="task.id">
-                    <div class="bg-white p-2 rounded shadow" v-if="task.column_id === col.id">
+                    <div class="bg-white p-2 rounded shadow" v-if="task.column_id === col.id"
+                         draggable="true"
+                         @dragstart="dragStartTask(task)" >
                         <h3 v-text="task.name"></h3>
-                        <button @click="editTaskOpen = true, editTask(task)">Edit</button>
-                        <button @click="deleteTaskConfirm = true, destroyTask(task)">Delete</button>
+                        <button v-if="project.owner_id === loggedInUser" @click="editTaskOpen = true, editTask(task)">Edit</button>
+                        <button v-if="project.owner_id === loggedInUser" @click="deleteTaskConfirm = true, destroyTask(task)">Delete</button>
                     </div>
                 </div>
                 <!-- Add more tasks here -->
 
             </div>
-            <button @click="createTaskOpen = true, createTask(col)">Add task</button>
+            <button v-if="project.owner_id === loggedInUser" @click="createTaskOpen = true, createTask(col)">Add task</button>
         </div>
     </div>
 
@@ -499,6 +501,13 @@ export default {
         },
         confirmDestroyTask(project, board) {
             router.delete(`/project/${project.id}/board/${board.id}/column/${this.selectedTask.column_id}/task/${this.selectedTask.id}/delete`, this.selectedTask);
+        },
+        dragStartTask(task) {
+                this.selectedTask = Object.assign({}, task);
+        },
+        droppedTask(col) {
+            this.selectedColumn = Object.assign({}, col)
+            router.put(`/column/${this.selectedColumn.id}/task/${this.selectedTask.id}/changeTaskInColumn`)
         },
     },
 

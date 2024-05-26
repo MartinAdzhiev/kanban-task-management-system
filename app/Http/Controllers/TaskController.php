@@ -166,4 +166,11 @@ class TaskController extends Controller
 
         return Redirect::route("board.show", ['board' => $board->id]);
     }
+
+    public function changeTaskInColumn(Column $column, Task $task){
+        $data['column_id'] = $column->id;
+        $task->update($data);
+        $board = $column->board_id;
+        return Redirect::route("board.show", ['board' => $board]);
+    }
 }
