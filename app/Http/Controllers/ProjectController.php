@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
+use function Symfony\Component\String\u;
 
 class ProjectController extends Controller
 {
@@ -29,7 +30,17 @@ class ProjectController extends Controller
         //
         $user = $request->user();
         $projects = DB::table('projects')->where('owner_id', $user->id)->get();
-        return Inertia::render('Project/Index', ['projects' =>$projects]);
+        $memberIn = DB::table('project_member')->where('user_id', $user->id)->get();
+        $memberInProjects = [];
+        foreach ($memberIn as $member){
+            $tmp = DB::table('projects')->where('id', $member->project_id)->get();
+            if(!$tmp->isEmpty()){
+                foreach ($tmp as $t){
+                    $memberInProjects[] = $t;
+                }
+            }
+        }
+        return Inertia::render('Project/Index', ['projects' =>$projects, 'memberInProjects' => $memberInProjects]);
     }
 
     /**

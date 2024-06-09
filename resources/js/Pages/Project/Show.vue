@@ -64,14 +64,14 @@ function submitCreateBoard(){
                     </div>
                 </div>
                 <div class="hidden shrink-0 sm:flex sm:flex-row sm:items-end gap-4">
-                    <button @click="editOpen = true, editBoard(board)" class="text-sm leading-6 text-gray-900">
-                        Edit
-                    </button>
-                    <button @click="destroyBoard(board)" class="text-sm leading-6 text-gray-900">Delete</button>
+                    <button v-if="owner.id === loggedInUser.id" @click="editOpen = true, editBoard(board)"
+                            class="text-sm leading-6 text-gray-900">Edit</button>
+                    <button v-if="owner.id === loggedInUser.id" @click="destroyBoard(board)"
+                            class="text-sm leading-6 text-gray-900">Delete</button>
                 </div>
             </li>
         </ul>
-        <button @click="createOpen = true">Add new board</button>
+        <button v-if="owner.id === loggedInUser.id" @click="createOpen = true">Add new board</button>
     </div>
     <TransitionRoot as="template" :show="openMembers">
         <Dialog as="div" class="relative z-10" @close="openMembers = false">

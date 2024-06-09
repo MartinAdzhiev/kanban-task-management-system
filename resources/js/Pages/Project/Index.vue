@@ -8,10 +8,11 @@ const editOpen = ref(false)
 
 const props = defineProps({
     projects: Object,
+    memberInProjects: Object
 })
 
 const {projects} = toRefs(props)
-
+console.log(projects);
 const form = reactive({
     name: null,
     description: null
@@ -26,9 +27,10 @@ function submitCreate() {
     <div class="container mx-auto px-4">
         <ul role="list" class="divide-y divide-gray-100">
             <li v-for="project in projects" :key="project.id" class="flex justify-between gap-x-6 py-5">
-                <div class="flex min-w-0 gap-x-4">
+                <div class="flex min-w-0 gap-x-4 ">
                     <div class="min-w-0 flex-auto">
-                        <button @click="show(project)" class="text-sm font-semibold leading-6 text-gray-900">{{ project.name }}</button>
+                        <button @click="show(project)" class="text-sm font-semibold leading-6 text-gray-900">{{ project.name }} -
+                            <span class="text-blue-800">Owner</span></button>
                         <p class="mt-1 truncate text-xs leading-5 text-gray-500">{{ project.description }}</p>
                     </div>
                 </div>
@@ -40,7 +42,19 @@ function submitCreate() {
                 </div>
             </li>
         </ul>
-        <button @click="createOpen = true">Add new project</button>
+        <ul role="list" class="divide-y divide-gray-100">
+            <li v-for="memberInProject in memberInProjects" :key="memberInProject.id" class="flex justify-between gap-x-6 py-5">
+                <div class="flex min-w-0 gap-x-4">
+                    <div class="min-w-0 flex-auto">
+                        <button @click="show(memberInProject)" class="text-sm font-semibold leading-6 text-gray-900">{{ memberInProject.name }} -
+                            <span class="text-green-800">Member</span></button>
+                        <p class="mt-1 truncate text-xs leading-5 text-gray-500">{{ memberInProject.description }}</p>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <hr>
+        <button @click="createOpen = true" class="mt-4">Add new project</button>
     </div>
     <TransitionRoot as="template" :show="createOpen">
         <Dialog as="form" class="relative z-10" @close="createOpen = false" @submit.prevent="submitCreate">
