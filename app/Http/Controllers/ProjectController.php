@@ -62,11 +62,12 @@ class ProjectController extends Controller
      */
     public function show(Project $project, Request $request)
     {
-        //
+        //owner or member
         $boards = $project->boards;
         $owner = $project->owner;
         $userLoggedIn = $request->user();
         $members = DB::table('project_member')->where("project_id", $project->id)->get();
+        $this->authorize('view', [Project::class, $project, $members]);
         $users = [];
         foreach ($members as $member) {
             /*if($member->id === $userLoggedIn->id){
@@ -87,7 +88,8 @@ class ProjectController extends Controller
      */
     public function update(Request $request, Project $project)
     {
-        //
+        //owner
+        $this->authorize('update', [Project::class, $project]);
         $this->validate($request, $this->rules);
         $data = $request::createFromGlobals()->all();
         $project->update($data);
@@ -99,12 +101,15 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
-        //
+        //owner
+        $this->authorize('delete', [Project::class, $project]);
         $project->delete();
         return Redirect::route("project.index");
     }
 
     public function addMemberToProject(Project $project, Request $request){
+        //owner
+        $this->authorize('addMember', [Project::class, $project]);
         $this->validate($request, $this->rulesMember);
         $data = $request::createFromGlobals()->all();
         $user = DB::table('users')->where('email',$data['email'])->first();

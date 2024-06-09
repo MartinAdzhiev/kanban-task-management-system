@@ -42,7 +42,8 @@ class BoardController extends Controller
      */
     public function store(Request $request, Project $project)
     {
-        //
+        //owner
+        $this->authorize('create', [Board::class, $project]);
         $this->validate($request, $this->rules);
         $board = $request::createFromGlobals()->all();
         $board['project_id'] = $project->id;
@@ -68,7 +69,7 @@ class BoardController extends Controller
      */
     public function show(Board $board)
     {
-        //
+        //owner or member
         $columns = $board->columns;
         $tasks = [];
         foreach ($columns as $col){
@@ -83,6 +84,7 @@ class BoardController extends Controller
         $priorities = array_column(TaskPriority::cases(), 'value');
 
         $project_members = DB::table('project_member')->where('project_id', $board->project_id)->get();
+        $this->authorize('view', [Board::class, $board->project, $project_members]);
         $users = [];
         foreach ($project_members as $member) {
             array_push($users, (object)[
@@ -116,7 +118,8 @@ class BoardController extends Controller
      */
     public function update(Request $request, Board $board)
     {
-        //
+        //owner
+        $this->authorize('update', [Board::class, $board->project]);
         $this->validate($request, $this->rules);
         $data = $request::createFromGlobals()->all();
         $board->update($data);
@@ -128,7 +131,8 @@ class BoardController extends Controller
      */
     public function destroy(Board $board)
     {
-        //
+        //owner
+        $this->authorize('delete', [Board::class, $board->project]);
         $board->delete();
         return Redirect::route("project.show", ['project' => $board->project]);
     }
