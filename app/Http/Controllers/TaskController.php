@@ -36,6 +36,14 @@ class TaskController extends Controller
         }
 
         $tasks = $query->get();
+        foreach ($tasks as $task) {
+            $column = Column::find($task->column_id);
+            $board = Board::find($column->board_id);
+            $project = Project::find($board->project_id);
+            $task['board_id'] = $board->id;
+            $task['project_id'] = $project->id;
+//            dd($task['board_id']);
+        }
 
 
         return Inertia::render('Task/Index', ['tasks' => $tasks,
