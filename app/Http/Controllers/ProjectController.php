@@ -50,10 +50,14 @@ class ProjectController extends Controller
     {
         //
         $this->validate($request, $this->rules);
-        $project = $request::createFromGlobals()->all();
+        $data = $request->validate([
+            'name' => 'required',
+            'description' => 'required',
+        ]);
+        //$data = $request::createFromGlobals()->all();
         $user = $request->user();
-        $project['owner_id'] = $user->id;
-        Project::create($project);
+        $data['owner_id'] = $user->id;
+        Project::create($data);
         return Redirect::route("project.index");
     }
 

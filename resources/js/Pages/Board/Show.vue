@@ -2,6 +2,7 @@
 import {reactive, ref, toRefs} from "vue";
 import {router, useForm} from "@inertiajs/vue3";
 import {Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot} from "@headlessui/vue";
+import AppLayout from "@/Layouts/AppLayout.vue";
 
 
 const props = defineProps({
@@ -52,11 +53,12 @@ function submitCreateColumn() {
 </script>
 
 <template>
-    <header class="bg-white shadow flex justify-between">
-        <div class=" max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+    <AppLayout title="Columns"></AppLayout>
+    <header class="container mx-auto bg-white flex justify-between">
+        <div class="max-w-7xl px-4 py-4">
             <h1 class="text-3xl font-bold tracking-tight text-gray-900">{{ board.name }}</h1>
         </div>
-        <div class="my-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 flex gap-4">
+        <div class="my-auto max-w-7xl px-4 py-4 flex gap-4">
             <button class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800" v-if="project.owner_id === loggedInUser" @click="createColumnOpen = true">Add new column</button>
         </div>
     </header>

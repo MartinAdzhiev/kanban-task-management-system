@@ -2,7 +2,8 @@
 import {reactive, toRefs} from 'vue'
 import {router} from '@inertiajs/vue3'
 import {Link} from "@inertiajs/vue3";
-import {useForm} from '@inertiajs/inertia-vue3'
+import {useForm} from '@inertiajs/vue3'
+import AppLayout from "@/Layouts/AppLayout.vue";
 
 
 const props = defineProps({
@@ -27,7 +28,7 @@ function submit() {
 
 <template>
 
-
+    <AppLayout title="Tasks"></AppLayout>
     <form class="max-w-lg mx-auto" @submit.prevent="submit">
 
         <div class="mx-auto mb-3">

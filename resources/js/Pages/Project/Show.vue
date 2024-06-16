@@ -1,7 +1,8 @@
 <script setup>
 import {reactive, ref, toRefs} from 'vue'
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
-import { router } from '@inertiajs/vue3'
+import {router, useForm} from '@inertiajs/vue3'
+import AppLayout from "@/Layouts/AppLayout.vue";
 
 const props = defineProps({
     project: Object,
@@ -18,12 +19,12 @@ const editOpen = ref(false)
 
 const {project, boards, owner, loggedInUser, members} = toRefs(props)
 
-const memberForm = reactive({
+const memberForm = useForm({
     email: null,
     role: null
 })
 
-const boardForm = reactive({
+const boardForm = useForm({
     name: null,
     description : null,
     defaultCols: false
@@ -31,27 +32,24 @@ const boardForm = reactive({
 
 function submitMember() {
     router.post(`/project/${project.value.id}/addMember`, memberForm)
+    memberForm.reset()
 }
 
 function submitCreateBoard(){
     router.post(`/project/${project.value.id}/board/store`, boardForm)
+    boardForm.reset()
 }
 </script>
 
 <template>
-    <!--<span v-for="member in members">
-        <span v-if="loggedInUser === member.user_id">
-            <span></span>
-        </span>
-    </span>-->
-    <div v-if="loggedInUser"></div>
-    <header class="bg-white shadow flex justify-between">
-        <div class=" max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+    <AppLayout title="Boards"></AppLayout>
+    <header class="container mx-auto bg-white flex justify-between">
+        <div class="max-w-7xl px-4 py-6">
             <h1 class="text-3xl font-bold tracking-tight text-gray-900">{{project.name}}</h1>
         </div>
-        <div class="my-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 flex gap-4">
-            <button @click="openMembers=true" class="text-1xl tracking-tight text-gray-900">See members </button>
-            <button v-if="owner.id === loggedInUser.id" @click="addMember=true">Add</button>
+        <div class="my-auto max-w-7xl px-4 py-6  flex gap-4">
+            <button class="text-green-900 hover:text-white border border-green-800 hover:bg-green-900 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-green-600 dark:text-green-400 dark:hover:text-white dark:hover:bg-green-600 dark:focus:ring-green-800" @click="openMembers=true">See members </button>
+            <button class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800" v-if="owner.id === loggedInUser.id" @click="addMember=true">Add</button>
         </div>
     </header>
     <div class="container mx-auto px-4">
@@ -65,13 +63,14 @@ function submitCreateBoard(){
                 </div>
                 <div class="hidden shrink-0 sm:flex sm:flex-row sm:items-end gap-4">
                     <button v-if="owner.id === loggedInUser.id" @click="editOpen = true, editBoard(board)"
-                            class="text-sm leading-6 text-gray-900">Edit</button>
+                            class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800">Edit</button>
                     <button v-if="owner.id === loggedInUser.id" @click="destroyBoard(board)"
-                            class="text-sm leading-6 text-gray-900">Delete</button>
+                            class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">Delete</button>
                 </div>
             </li>
         </ul>
-        <button v-if="owner.id === loggedInUser.id" @click="createOpen = true">Add new board</button>
+        <hr>
+        <button class="mt-4 text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800" v-if="owner.id === loggedInUser.id" @click="createOpen = true">Add new board</button>
     </div>
     <TransitionRoot as="template" :show="openMembers">
         <Dialog as="div" class="relative z-10" @close="openMembers = false">

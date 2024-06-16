@@ -1,7 +1,8 @@
 <script setup>
 import {reactive, ref, toRefs} from 'vue'
 import {Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot} from '@headlessui/vue'
-import {router} from "@inertiajs/vue3";
+import {router, useForm} from "@inertiajs/vue3";
+import AppLayout from "@/Layouts/AppLayout.vue";
 
 const createOpen = ref(false)
 const editOpen = ref(false)
@@ -13,17 +14,24 @@ const props = defineProps({
 
 const {projects} = toRefs(props)
 console.log(projects);
-const form = reactive({
+const form = useForm({
     name: null,
     description: null
 })
 
 function submitCreate() {
     router.post('/project/store', form)
+    form.reset();
 }
 </script>
 
 <template>
+    <AppLayout title="Projects"></AppLayout>
+    <header class="container mx-auto bg-white flex justify-between">
+        <div class="max-w-7xl px-4 py-6">
+            <h1 class="text-3xl font-bold tracking-tight text-gray-900">Projects</h1>
+        </div>
+    </header>
     <div class="container mx-auto px-4">
         <ul role="list" class="divide-y divide-gray-100">
             <li v-for="project in projects" :key="project.id" class="flex justify-between gap-x-6 py-5">
@@ -35,13 +43,14 @@ function submitCreate() {
                     </div>
                 </div>
                 <div class="hidden shrink-0 sm:flex sm:flex-row sm:items-end gap-4">
-                    <button @click="editOpen = true, editProject(project)" class="text-sm leading-6 text-gray-900">
+                    <button @click="editOpen = true, editProject(project)" class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800">
                         Edit
                     </button>
-                    <button @click="destroy(project)" class="text-sm leading-6 text-gray-900">Delete</button>
+                    <button @click="destroy(project)" class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">Delete</button>
                 </div>
             </li>
         </ul>
+        <hr>
         <ul role="list" class="divide-y divide-gray-100">
             <li v-for="memberInProject in memberInProjects" :key="memberInProject.id" class="flex justify-between gap-x-6 py-5">
                 <div class="flex min-w-0 gap-x-4">
@@ -54,7 +63,7 @@ function submitCreate() {
             </li>
         </ul>
         <hr>
-        <button @click="createOpen = true" class="mt-4">Add new project</button>
+        <button @click="createOpen = true" class="mt-4 text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800">Add new project</button>
     </div>
     <TransitionRoot as="template" :show="createOpen">
         <Dialog as="form" class="relative z-10" @close="createOpen = false" @submit.prevent="submitCreate">

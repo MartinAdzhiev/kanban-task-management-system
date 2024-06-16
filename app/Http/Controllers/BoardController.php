@@ -45,7 +45,12 @@ class BoardController extends Controller
         //owner
         $this->authorize('create', [Board::class, $project]);
         $this->validate($request, $this->rules);
-        $board = $request::createFromGlobals()->all();
+        //$board = $request::createFromGlobals()->all();
+        $board = $request->validate([
+            'name' => 'required',
+            'description' => 'required',
+            'defaultCols' => 'required',
+        ]);
         $board['project_id'] = $project->id;
         $defCols = $board['defaultCols'];
         unset($board['defaultCols']);
