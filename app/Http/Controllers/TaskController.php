@@ -169,6 +169,7 @@ class TaskController extends Controller
 
     public function changeTaskInColumn(Column $column, Task $task){
         $data['column_id'] = $column->id;
+        $data['deadline'] = Carbon::parse($task->deadline)->startOfDay();
         $task->update($data);
         $board = $column->board_id;
         return Redirect::route("board.show", ['board' => $board]);
