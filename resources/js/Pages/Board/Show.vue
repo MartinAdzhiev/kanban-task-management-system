@@ -87,7 +87,7 @@ function submitCreateColumn() {
             <div class="space-y-2">
                 <div v-for="task in tasks" :key="task.id">
                     <div class="bg-white border-fuchsia-300 border-4 p-2 rounded shadow"
-                         v-if="task.column_id === col.id && loggedInUser === task.assigned_to"
+                         v-if="task.column_id === col.id && loggedInUser === task.assigned_to.id"
                          draggable="true"
                          @dragstart="dragStartTask(task)">
                         <div class="p-2 rounded shadow-sm border-black-100 border-2">
@@ -101,8 +101,10 @@ function submitCreateColumn() {
                             <p v-if="task.priority === 'High'"
                                class="bg-red-300 text-xs w-max p-1 rounded mr-2 text-gray-700">{{ task.priority }}</p>
                             <div class="flex flex-row items-center mt-2">
-                                <div class="bg-gray-300 rounded-full w-4 h-4 mr-3"></div>
-                                <a href="#" class="text-xs text-gray-500">{{ task.assigned_to }}</a>
+                                <div class="flex mr-1.5 text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
+                                    <img class="h-8 w-8 rounded-full object-cover" :src="task.assigned_to.profile_photo_url" :alt="task.assigned_to.id">
+                                </div>
+                                <p class="text-sm text-gray-500">{{ task.assigned_to.name }}</p>
                             </div>
                             <p class="text-xs text-gray-500 mt-2 mb-2">{{ task.created_at.slice(0, 10) }} &#10141;
                                 {{ task.deadline.slice(0, 10) }}</p>
@@ -128,7 +130,7 @@ function submitCreateColumn() {
                     </div>
 
                     <div class="bg-white border-4 p-2 rounded shadow"
-                         v-if="task.column_id === col.id && loggedInUser !== task.assigned_to"
+                         v-if="task.column_id === col.id && loggedInUser !== task.assigned_to.id"
                          draggable="false"
                          @dragstart="dragStartTask(task)">
                         <div class="p-2 rounded shadow-sm border-black-100 border-2">
@@ -142,8 +144,10 @@ function submitCreateColumn() {
                             <p v-if="task.priority === 'High'"
                                class="bg-red-300 text-xs w-max p-1 rounded mr-2 text-gray-700">{{ task.priority }}</p>
                             <div class="flex flex-row items-center mt-2">
-                                <div class="bg-gray-300 rounded-full w-4 h-4 mr-3"></div>
-                                <a href="#" class="text-xs text-gray-500">{{ task.assigned_to }}</a>
+                                <div class="flex mr-1.5 text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
+                                    <img class="h-8 w-8 rounded-full object-cover" :src="task.assigned_to.profile_photo_url" :alt="task.assigned_to.id">
+                                </div>
+                                <p class="text-sm text-gray-500">{{ task.assigned_to.name }}</p>
                             </div>
                             <p class="text-xs text-gray-500 mt-2">{{ task.created_at.slice(0, 10) }} &#10141;
                                 {{ task.deadline.slice(0, 10) }}</p>

@@ -86,8 +86,8 @@ function submit() {
                 <p class="truncate">Description: {{ task.description }}</p>
             </div>
             <div class="flex flex-none items-center gap-x-4">
-                <a :href="'/project/' + task.project_id + '/show'" class="hidden rounded-md bg-fuchsia-100 px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:block">View project</a>
-                <a :href="'/board/' + task.board_id + '/show'" class="hidden rounded-md bg-fuchsia-100 px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:block">View board</a>
+<!--                <a :href="'/project/' + task.project_id + '/show'" class="hidden rounded-md bg-fuchsia-100 px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:block">View project</a>-->
+                <a :href="'/board/' + task.column.board_id + '/show'" class="hidden rounded-md bg-fuchsia-100 px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:block">View board</a>
                 <div class="relative flex-none">
 
                 </div>

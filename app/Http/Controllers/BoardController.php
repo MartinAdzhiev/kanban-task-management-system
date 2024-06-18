@@ -78,13 +78,17 @@ class BoardController extends Controller
         $columns = $board->columns;
         $tasks = [];
         foreach ($columns as $col){
-            $tmp = DB::table("tasks")->where("column_id", $col->id)->get();
+//            $tmp = DB::table("tasks")->join("users", 'tasks.assigned_to', '=', 'users.id')->where("column_id", $col->id)->get();
+            //za da se zeme i userot od relacijata
+            $tmp = Task::where('column_id', $col->id)->with('assignedTo')->get();
             if(!$tmp->isEmpty()){
                 foreach ($tmp as $t){
                     $tasks[] = $t;
                 }
             }
         }
+
+//        dd($tasks);
 
         $priorities = array_column(TaskPriority::cases(), 'value');
 
