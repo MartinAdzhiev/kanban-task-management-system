@@ -84,7 +84,7 @@ function submitCreateColumn() {
                 </div>
             </div>
             <!-- Tasks -->
-            <div class="space-y-2">
+            <div class="space-y-2 overflow-hidden">
                 <div v-for="task in tasks" :key="task.id">
                     <div class="bg-white border-fuchsia-300 border-4 p-2 rounded shadow"
                          v-if="task.column_id === col.id && loggedInUser === task.assigned_to.id"
@@ -211,8 +211,8 @@ function submitCreateColumn() {
                                             Create new column
                                         </DialogTitle>
                                         <div class="mt-2">
-                                            <label for="name">Column Name:</label>
-                                            <input id="name" v-model="columnForm.name"/>
+<!--                                            <label  for="name">Column Name:</label>-->
+                                            <input class="peer h-full w-full rounded-[7px]  !border  !border-gray-300 border-t-transparent bg-transparent bg-white px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700  shadow-lg shadow-gray-900/5 outline outline-0 ring-4 ring-transparent transition-all placeholder:text-gray-500 placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2  focus:!border-gray-900 focus:border-t-transparent focus:!border-t-gray-900 focus:outline-0 focus:ring-gray-900/10 disabled:border-0 disabled:bg-blue-gray-50" placeholder="Column Name" id="name" v-model="columnForm.name"/>
                                         </div>
                                     </div>
                                 </div>
@@ -260,8 +260,9 @@ function submitCreateColumn() {
                                             Edit column
                                         </DialogTitle>
                                         <div class="mt-2">
-                                            <label for="name">Name:</label>
-                                            <input id="name" v-model="selectedColumn.name"/>
+<!--                                            <label for="name">Name:</label>-->
+                                            <input id="name" v-model="selectedColumn.name"
+                                                   class="peer h-full w-full rounded-[7px]  !border  !border-gray-300 border-t-transparent bg-transparent bg-white px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700  shadow-lg shadow-gray-900/5 outline outline-0 ring-4 ring-transparent transition-all placeholder:text-gray-500 placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2  focus:!border-gray-900 focus:border-t-transparent focus:!border-t-gray-900 focus:outline-0 focus:ring-gray-900/10 disabled:border-0 disabled:bg-blue-gray-50"/>
                                         </div>
                                     </div>
                                 </div>
@@ -359,22 +360,22 @@ function submitCreateColumn() {
                                         </DialogTitle>
                                         <div class="mt-2">
                                             <label for="name">Task Name:</label>
-                                            <input id="name" v-model="taskForm.name"/>
+                                            <input class="peer h-full w-full rounded-[7px]  !border  !border-gray-600 border-t-transparent bg-transparent bg-white px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700  shadow-lg shadow-gray-900/5 outline outline-0 ring-4 ring-transparent transition-all placeholder:text-gray-500 placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2  focus:!border-gray-900 focus:border-t-transparent focus:!border-t-gray-900 focus:outline-0 focus:ring-gray-900/10 disabled:border-0 disabled:bg-blue-gray-50" id="name" v-model="taskForm.name"/>
                                         </div>
 
                                         <div class="mt-2">
                                             <label for="description">Task Description:</label>
-                                            <input type="text" id="description" v-model="taskForm.description"/>
+                                            <input class="peer h-full w-full rounded-[7px]  !border  !border-gray-600 border-t-transparent bg-transparent bg-white px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700  shadow-lg shadow-gray-900/5 outline outline-0 ring-4 ring-transparent transition-all placeholder:text-gray-500 placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2  focus:!border-gray-900 focus:border-t-transparent focus:!border-t-gray-900 focus:outline-0 focus:ring-gray-900/10 disabled:border-0 disabled:bg-blue-gray-50" type="text" id="description" v-model="taskForm.description"/>
                                         </div>
 
                                         <div class="mt-2">
                                             <label for="deadline">Due Date:</label>
-                                            <input type="date" id="deadline" v-model="taskForm.deadline"/>
+                                            <input class="peer h-full w-full rounded-[7px]  !border  !border-gray-600 border-t-transparent bg-transparent bg-white px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700  shadow-lg shadow-gray-900/5 outline outline-0 ring-4 ring-transparent transition-all placeholder:text-gray-500 placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2  focus:!border-gray-900 focus:border-t-transparent focus:!border-t-gray-900 focus:outline-0 focus:ring-gray-900/10 disabled:border-0 disabled:bg-blue-gray-50" type="date" id="deadline" v-model="taskForm.deadline"/>
                                         </div>
 
                                         <div class="mt-2">
                                             <label for="priority">Priority:</label>
-                                            <select id="priority" v-model="taskForm.priority">
+                                            <select class="peer h-full w-full rounded-[7px]  !border  !border-gray-600 border-t-transparent bg-transparent bg-white px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700  shadow-lg shadow-gray-900/5 outline outline-0 ring-4 ring-transparent transition-all placeholder:text-gray-500 placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2  focus:!border-gray-900 focus:border-t-transparent focus:!border-t-gray-900 focus:outline-0 focus:ring-gray-900/10 disabled:border-0 disabled:bg-blue-gray-50" id="priority" v-model="taskForm.priority">
                                                 <option v-for="priority in priorities" :value="priority">
                                                     {{ priority }}
                                                 </option>
@@ -382,7 +383,7 @@ function submitCreateColumn() {
                                         </div>
 
                                         <div class="mt-2">
-                                            <label for="is_assigned_to_owner">Assign to me</label>
+                                            <label class="mr-1.5" for="is_assigned_to_owner">Assign to me</label>
                                             <input type="checkbox" id="is_assigned_to_owner"
                                                    v-model="taskForm.is_assigned_to_owner"/>
                                         </div>
@@ -390,7 +391,8 @@ function submitCreateColumn() {
                                         <div class="mt-2">
                                             <label for="assignee">Assign To:</label>
                                             <select :disabled="taskForm.is_assigned_to_owner" id="assignee"
-                                                    v-model="taskForm.assigned_to">
+                                                    v-model="taskForm.assigned_to"
+                                                    class="peer h-full w-full rounded-[7px]  !border  !border-gray-600 border-t-transparent bg-transparent bg-white px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700  shadow-lg shadow-gray-900/5 outline outline-0 ring-4 ring-transparent transition-all placeholder:text-gray-500 placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2  focus:!border-gray-900 focus:border-t-transparent focus:!border-t-gray-900 focus:outline-0 focus:ring-gray-900/10 disabled:border-0 disabled:bg-blue-gray-50">
                                                 <option v-for="member in members" :value="member.user_id">{{
                                                         member.name
                                                     }}-{{ member.role }}
@@ -444,24 +446,28 @@ function submitCreateColumn() {
                                         </DialogTitle>
                                         <div class="mt-2">
                                             <label for="name">Task Name:</label>
-                                            <input id="name" v-model="selectedTask.name"/>
+                                            <input id="name" v-model="selectedTask.name"
+                                                   class="peer h-full w-full rounded-[7px]  !border  !border-gray-600 border-t-transparent bg-transparent bg-white px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700  shadow-lg shadow-gray-900/5 outline outline-0 ring-4 ring-transparent transition-all placeholder:text-gray-500 placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2  focus:!border-gray-900 focus:border-t-transparent focus:!border-t-gray-900 focus:outline-0 focus:ring-gray-900/10 disabled:border-0 disabled:bg-blue-gray-50"/>
                                         </div>
 
                                         <div class="mt-2">
                                             <label for="description">Task Description:</label>
-                                            <input type="text" id="description" v-model="selectedTask.description"/>
+                                            <input type="text" id="description" v-model="selectedTask.description"
+                                                   class="peer h-full w-full rounded-[7px]  !border  !border-gray-600 border-t-transparent bg-transparent bg-white px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700  shadow-lg shadow-gray-900/5 outline outline-0 ring-4 ring-transparent transition-all placeholder:text-gray-500 placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2  focus:!border-gray-900 focus:border-t-transparent focus:!border-t-gray-900 focus:outline-0 focus:ring-gray-900/10 disabled:border-0 disabled:bg-blue-gray-50"/>
                                         </div>
 
                                         <div class="mt-2">
                                             <label for="deadline">Current Due Date:
                                                 {{ selectedTask.deadline.slice(0, 10) }}</label>
                                             <br>
-                                            <input type="date" id="deadline" v-model="selectedTask.deadline">
+                                            <input type="date" id="deadline" v-model="selectedTask.deadline"
+                                                   class="peer h-full w-full rounded-[7px]  !border  !border-gray-600 border-t-transparent bg-transparent bg-white px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700  shadow-lg shadow-gray-900/5 outline outline-0 ring-4 ring-transparent transition-all placeholder:text-gray-500 placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2  focus:!border-gray-900 focus:border-t-transparent focus:!border-t-gray-900 focus:outline-0 focus:ring-gray-900/10 disabled:border-0 disabled:bg-blue-gray-50">
                                         </div>
 
                                         <div class="mt-2">
                                             <label for="priority">Priority:</label>
-                                            <select id="priority" v-model="selectedTask.priority">
+                                            <select id="priority" v-model="selectedTask.priority"
+                                                    class="peer h-full w-full rounded-[7px]  !border  !border-gray-600 border-t-transparent bg-transparent bg-white px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700  shadow-lg shadow-gray-900/5 outline outline-0 ring-4 ring-transparent transition-all placeholder:text-gray-500 placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2  focus:!border-gray-900 focus:border-t-transparent focus:!border-t-gray-900 focus:outline-0 focus:ring-gray-900/10 disabled:border-0 disabled:bg-blue-gray-50">
                                                 <option v-for="priority in priorities" :value="priority">
                                                     {{ priority }}
                                                 </option>
@@ -469,7 +475,7 @@ function submitCreateColumn() {
                                         </div>
 
                                         <div class="mt-2">
-                                            <label for="is_assigned_to_owner">Assign to me</label>
+                                            <label class="mr-1.5" for="is_assigned_to_owner">Assign to me</label>
                                             <input type="checkbox" id="is_assigned_to_owner"
                                                    v-model="selectedTask.is_assigned_to_owner"/>
                                         </div>
@@ -477,7 +483,8 @@ function submitCreateColumn() {
                                         <div class="mt-2">
                                             <label for="assignee">Assign To:</label>
                                             <select :disabled="selectedTask.is_assigned_to_owner" id="assignee"
-                                                    v-model="selectedTask.assigned_to">
+                                                    v-model="selectedTask.assigned_to"
+                                                    class="peer h-full w-full rounded-[7px]  !border  !border-gray-600 border-t-transparent bg-transparent bg-white px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700  shadow-lg shadow-gray-900/5 outline outline-0 ring-4 ring-transparent transition-all placeholder:text-gray-500 placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2  focus:!border-gray-900 focus:border-t-transparent focus:!border-t-gray-900 focus:outline-0 focus:ring-gray-900/10 disabled:border-0 disabled:bg-blue-gray-50">
                                                 <option v-for="member in members" :value="member.user_id">{{
                                                         member.name
                                                     }}-{{ member.role }}
@@ -556,7 +563,7 @@ function submitCreateColumn() {
 </template>
 
 <script>
-import {router} from "@inertiajs/vue3";
+import {router, useForm} from "@inertiajs/vue3";
 import {reactive, ref} from "vue";
 
 
