@@ -5,3 +5,11 @@
 [x-cloak] {
     display: none;
 }
+
+#taskContainer {
+    cursor: move;
+}
+
+#taskContainerDisabled {
+    cursor: not-allowed;
+}

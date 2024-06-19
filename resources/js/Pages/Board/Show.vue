@@ -86,7 +86,7 @@ function submitCreateColumn() {
             <!-- Tasks -->
             <div class="space-y-2 overflow-hidden">
                 <div v-for="task in tasks" :key="task.id">
-                    <div class="bg-white border-fuchsia-300 border-4 p-2 rounded shadow"
+                    <div id="taskContainer" class="bg-white border-fuchsia-300 border-4 p-2 rounded shadow"
                          v-if="task.column_id === col.id && loggedInUser === task.assigned_to.id"
                          draggable="true"
                          @dragstart="dragStartTask(task)">
@@ -129,7 +129,7 @@ function submitCreateColumn() {
 
                     </div>
 
-                    <div class="bg-white border-4 p-2 rounded shadow"
+                    <div id="taskContainerDisabled" class="bg-white border-4 p-2 rounded shadow"
                          v-if="task.column_id === col.id && loggedInUser !== task.assigned_to.id"
                          draggable="false"
                          @dragstart="dragStartTask(task)">
@@ -632,4 +632,6 @@ export default {
 
 
 };
+
+
 </script>
