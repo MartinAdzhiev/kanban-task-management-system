@@ -25,13 +25,11 @@ class TaskController extends Controller
 
         $query = Task::query()->where('assigned_to', Auth::id())->with('column');
 
-        if (isset($request->priority) && ($request->priority != null))
-        {
+        if (isset($request->priority) && ($request->priority != null)) {
             $query->where('priority', $request->priority);
         }
 
-        if (isset($request->deadline) && ($request->deadline != null))
-        {
+        if (isset($request->deadline) && ($request->deadline != null)) {
             $query->where('deadline', $request->deadline);
         }
 
@@ -39,7 +37,7 @@ class TaskController extends Controller
 
 
         return Inertia::render('Task/Index', ['tasks' => $tasks,
-                                                        'priorities' => $priorities]);
+            'priorities' => $priorities]);
     }
 
 
@@ -128,6 +126,7 @@ class TaskController extends Controller
 
     public function update(Request $request, Project $project, Board $board, Column $column, Task $task)
     {
+
         $this->authorize('update', [Task::class, $project]);
 
         $is_assigned_to_owner = $request->input('is_assigned_to_owner');
@@ -136,23 +135,29 @@ class TaskController extends Controller
         $data = $request->validate([
             'name' => 'required',
             'description' => 'required',
-            'deadline' => ['required', 'after_or_equal:' . now()->format('Y-m-d')],
+            'deadline' => 'required',
             'priority' => ['required', Rule::in(array_column(TaskPriority::cases(), 'value'))],
             'assigned_to' => Rule::requiredIf($is_assigned_to_owner == false),
         ]);
 
-        $data['deadline'] = Carbon::parse($data['deadline'])->startOfDay();
+        $deadline = $request->input('deadline');
+        $data['deadline'] = Carbon::parse($deadline)->startOfDay();
 
 
-        if ($is_assigned_to_owner) {
-            $data['assigned_to'] = Auth::id();
-            $data['is_assigned_to_owner'] = true;
+        if ($data['deadline'] >= date('Y-m-d') || $data['deadline'] >= $task->deadline) {
+            if ($is_assigned_to_owner) {
+                $data['assigned_to'] = Auth::id();
+                $data['is_assigned_to_owner'] = true;
+            } else {
+                if (is_array($data['assigned_to'])) {
+                    $data['assigned_to'] = $data['assigned_to']['id'];
+                }
+                $data['is_assigned_to_owner'] = false;
+            }
+
+            $task->update($data);
         }
-        else {
-            $data['is_assigned_to_owner'] = false;
-        }
 
-        $task->update($data);
 
         return Redirect::route("board.show", ['board' => $board->id]);
     }
@@ -167,7 +172,8 @@ class TaskController extends Controller
         return Redirect::route("board.show", ['board' => $board->id]);
     }
 
-    public function changeTaskInColumn(Column $column, Task $task){
+    public function changeTaskInColumn(Column $column, Task $task)
+    {
         $data['column_id'] = $column->id;
         $data['deadline'] = Carbon::parse($task->deadline)->startOfDay();
         $task->update($data);
