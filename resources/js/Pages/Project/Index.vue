@@ -3,6 +3,7 @@ import {reactive, ref, toRefs} from 'vue'
 import {Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot} from '@headlessui/vue'
 import {router, useForm} from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
+import Footer from "@/Layouts/Footer.vue";
 
 const createOpen = ref(false)
 const editOpen = ref(false)
@@ -27,16 +28,16 @@ function submitCreate() {
 
 <template>
     <AppLayout title="Projects"></AppLayout>
-    <header class="container mx-auto bg-white flex justify-between">
-        <div class="max-w-7xl px-4 py-6">
+    <header class="bg-gray-200 flex justify-between">
+        <div class="container mx-auto max-w-7xl px-4 py-6">
             <h1 class="text-3xl font-bold tracking-tight text-gray-900">Projects</h1>
         </div>
     </header>
     <div class="container mx-auto px-4">
         <ul role="list" class="divide-y divide-gray-100">
-            <li v-for="project in projects" :key="project.id" class="flex justify-between gap-x-6 py-5">
-                <div class="flex min-w-0 gap-x-4 ">
-                    <div class="min-w-0 flex-auto">
+            <li v-for="project in projects" :key="project.id" class="flex justify-between gap-x-6 py-5 hover:bg-blue-100 rounded">
+                <div class="flex min-w-0 gap-x-4">
+                    <div class="min-w-0 flex-auto flex-grow">
                         <button @click="show(project)" class="text-sm font-semibold leading-6 text-gray-900">{{ project.name }} -
                             <span class="text-blue-800">Owner</span></button>
                         <p class="mt-1 truncate text-xs leading-5 text-gray-500">{{ project.description }}</p>
@@ -52,7 +53,7 @@ function submitCreate() {
         </ul>
         <hr>
         <ul role="list" class="divide-y divide-gray-100">
-            <li v-for="memberInProject in memberInProjects" :key="memberInProject.id" class="flex justify-between gap-x-6 py-5">
+            <li v-for="memberInProject in memberInProjects" :key="memberInProject.id" class="flex justify-between gap-x-6 py-5 hover:bg-green-100">
                 <div class="flex min-w-0 gap-x-4">
                     <div class="min-w-0 flex-auto">
                         <button @click="show(memberInProject)" class="text-sm font-semibold leading-6 text-gray-900">{{ memberInProject.name }} -
@@ -65,6 +66,7 @@ function submitCreate() {
         <hr>
         <button @click="createOpen = true" class="mt-4 text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800">Add new project</button>
     </div>
+    <Footer></Footer>
     <TransitionRoot as="template" :show="createOpen">
         <Dialog as="form" class="relative z-10" @close="createOpen = false" @submit.prevent="submitCreate">
             <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0" enter-to="opacity-100"
@@ -88,11 +90,25 @@ function submitCreate() {
                                         </DialogTitle>
                                         <div class="mt-2">
                                             <label for="name">Name:</label>
-                                            <input id="name" v-model="form.name"/>
+                                            <input class="peer h-full w-full rounded-[7px]  !border  !border-gray-300
+                                            border-t-transparent bg-transparent bg-white px-3 py-2.5 font-sans text-sm
+                                            font-normal text-blue-gray-700  shadow-lg shadow-gray-900/5 outline outline-0
+                                            ring-4 ring-transparent transition-all placeholder:text-gray-500 placeholder-shown:border
+                                            placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200
+                                            focus:border-2 focus:!border-gray-900 focus:border-t-transparent focus:!border-t-gray-900
+                                            focus:outline-0 focus:ring-gray-900/10 disabled:border-0 disabled:bg-blue-gray-50"
+                                                   placeholder="Project Name" id="name" v-model="form.name"/>
                                         </div>
                                         <div class="mt-2">
                                             <label for="description">Description:</label>
-                                            <input id="description" v-model="form.description"/>
+                                            <input class="peer h-full w-full rounded-[7px]  !border  !border-gray-300
+                                            border-t-transparent bg-transparent bg-white px-3 py-2.5 font-sans text-sm
+                                            font-normal text-blue-gray-700  shadow-lg shadow-gray-900/5 outline outline-0
+                                            ring-4 ring-transparent transition-all placeholder:text-gray-500 placeholder-shown:border
+                                            placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200
+                                            focus:border-2 focus:!border-gray-900 focus:border-t-transparent focus:!border-t-gray-900
+                                            focus:outline-0 focus:ring-gray-900/10 disabled:border-0 disabled:bg-blue-gray-50"
+                                                   placeholder="Project Description" id="description" v-model="form.description"/>
                                         </div>
                                     </div>
                                 </div>
@@ -137,11 +153,25 @@ function submitCreate() {
                                         </DialogTitle>
                                         <div class="mt-2">
                                             <label for="name">Name:</label>
-                                            <input id="name" v-model="selectedProject.name"/>
+                                            <input class="peer h-full w-full rounded-[7px]  !border  !border-gray-300
+                                            border-t-transparent bg-transparent bg-white px-3 py-2.5 font-sans text-sm
+                                            font-normal text-blue-gray-700  shadow-lg shadow-gray-900/5 outline outline-0
+                                            ring-4 ring-transparent transition-all placeholder:text-gray-500 placeholder-shown:border
+                                            placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200
+                                            focus:border-2 focus:!border-gray-900 focus:border-t-transparent focus:!border-t-gray-900
+                                            focus:outline-0 focus:ring-gray-900/10 disabled:border-0 disabled:bg-blue-gray-50"
+                                                   placeholder="Project Name" id="name" v-model="selectedProject.name"/>
                                         </div>
                                         <div class="mt-2">
                                             <label for="description">Description:</label>
-                                            <input id="description" v-model="selectedProject.description"/>
+                                            <input class="peer h-full w-full rounded-[7px]  !border  !border-gray-300
+                                            border-t-transparent bg-transparent bg-white px-3 py-2.5 font-sans text-sm
+                                            font-normal text-blue-gray-700  shadow-lg shadow-gray-900/5 outline outline-0
+                                            ring-4 ring-transparent transition-all placeholder:text-gray-500 placeholder-shown:border
+                                            placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200
+                                            focus:border-2 focus:!border-gray-900 focus:border-t-transparent focus:!border-t-gray-900
+                                            focus:outline-0 focus:ring-gray-900/10 disabled:border-0 disabled:bg-blue-gray-50"
+                                                   placeholder="Project Name" id="description" v-model="selectedProject.description"/>
                                         </div>
                                     </div>
                                 </div>

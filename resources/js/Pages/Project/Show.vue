@@ -3,6 +3,7 @@ import {reactive, ref, toRefs} from 'vue'
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import {router, useForm} from '@inertiajs/vue3'
 import AppLayout from "@/Layouts/AppLayout.vue";
+import Footer from "@/Layouts/Footer.vue";
 
 const props = defineProps({
     project: Object,
@@ -43,7 +44,8 @@ function submitCreateBoard(){
 
 <template>
     <AppLayout title="Boards"></AppLayout>
-    <header class="container mx-auto bg-white flex justify-between">
+    <div class="bg-gray-200">
+    <header class="container mx-auto flex justify-between">
         <div class="max-w-7xl px-4 py-6">
             <h1 class="text-3xl font-bold tracking-tight text-gray-900">{{project.name}}</h1>
         </div>
@@ -52,9 +54,10 @@ function submitCreateBoard(){
             <button class="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800" v-if="owner.id === loggedInUser.id" @click="addMember=true">Add</button>
         </div>
     </header>
+    </div>
     <div class="container mx-auto px-4">
         <ul role="list" class="divide-y divide-gray-100">
-            <li v-for="board in boards" :key="board.id" class="flex justify-between gap-x-6 py-5">
+            <li v-for="board in boards" :key="board.id" class="flex justify-between gap-x-6 py-5 hover:bg-gray-100 rounded">
                 <div class="flex min-w-0 gap-x-4">
                     <div class="min-w-0 flex-auto">
                         <button @click="showBoard(board)" class="text-sm font-semibold leading-6 text-gray-900">{{ board.name }}</button>
@@ -72,6 +75,7 @@ function submitCreateBoard(){
         <hr>
         <button class="mt-4 text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800" v-if="owner.id === loggedInUser.id" @click="createOpen = true">Add new board</button>
     </div>
+    <Footer></Footer>
     <TransitionRoot as="template" :show="openMembers">
         <Dialog as="div" class="relative z-10" @close="openMembers = false">
             <TransitionChild as="template" enter="ease-in-out duration-500" enter-from="opacity-0" enter-to="opacity-100"
@@ -142,11 +146,25 @@ function submitCreateBoard(){
                                         </DialogTitle>
                                         <div class="mt-2">
                                             <label for="email">Add user by email:</label>
-                                            <input id="email" v-model="memberForm.email"/>
+                                            <input class="peer h-full w-full rounded-[7px]  !border  !border-gray-300
+                                            border-t-transparent bg-transparent bg-white px-3 py-2.5 font-sans text-sm
+                                            font-normal text-blue-gray-700  shadow-lg shadow-gray-900/5 outline outline-0
+                                            ring-4 ring-transparent transition-all placeholder:text-gray-500 placeholder-shown:border
+                                            placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200
+                                            focus:border-2 focus:!border-gray-900 focus:border-t-transparent focus:!border-t-gray-900
+                                            focus:outline-0 focus:ring-gray-900/10 disabled:border-0 disabled:bg-blue-gray-50"
+                                                   placeholder="Member email" id="email" v-model="memberForm.email"/>
                                         </div>
                                         <div class="mt-2">
                                             <label for="role">Role:</label>
-                                            <input id="role" v-model="memberForm.role"/>
+                                            <input class="peer h-full w-full rounded-[7px]  !border  !border-gray-300
+                                            border-t-transparent bg-transparent bg-white px-3 py-2.5 font-sans text-sm
+                                            font-normal text-blue-gray-700  shadow-lg shadow-gray-900/5 outline outline-0
+                                            ring-4 ring-transparent transition-all placeholder:text-gray-500 placeholder-shown:border
+                                            placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200
+                                            focus:border-2 focus:!border-gray-900 focus:border-t-transparent focus:!border-t-gray-900
+                                            focus:outline-0 focus:ring-gray-900/10 disabled:border-0 disabled:bg-blue-gray-50"
+                                                   placeholder="Member Role" id="role" v-model="memberForm.role"/>
                                         </div>
                                     </div>
                                 </div>
@@ -192,15 +210,29 @@ function submitCreateBoard(){
                                         </DialogTitle>
                                         <div class="mt-2">
                                             <label for="name">Name:</label>
-                                            <input id="name" v-model="boardForm.name"/>
+                                            <input class="peer h-full w-full rounded-[7px]  !border  !border-gray-300
+                                            border-t-transparent bg-transparent bg-white px-3 py-2.5 font-sans text-sm
+                                            font-normal text-blue-gray-700  shadow-lg shadow-gray-900/5 outline outline-0
+                                            ring-4 ring-transparent transition-all placeholder:text-gray-500 placeholder-shown:border
+                                            placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200
+                                            focus:border-2 focus:!border-gray-900 focus:border-t-transparent focus:!border-t-gray-900
+                                            focus:outline-0 focus:ring-gray-900/10 disabled:border-0 disabled:bg-blue-gray-50"
+                                                   placeholder="Board Name" id="name" v-model="boardForm.name"/>
                                         </div>
                                         <div class="mt-2">
                                             <label for="description">Description:</label>
-                                            <input type="text" id="description" v-model="boardForm.description"/>
+                                            <input class="peer h-full w-full rounded-[7px]  !border  !border-gray-300
+                                            border-t-transparent bg-transparent bg-white px-3 py-2.5 font-sans text-sm
+                                            font-normal text-blue-gray-700  shadow-lg shadow-gray-900/5 outline outline-0
+                                            ring-4 ring-transparent transition-all placeholder:text-gray-500 placeholder-shown:border
+                                            placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200
+                                            focus:border-2 focus:!border-gray-900 focus:border-t-transparent focus:!border-t-gray-900
+                                            focus:outline-0 focus:ring-gray-900/10 disabled:border-0 disabled:bg-blue-gray-50"
+                                                   placeholder="Board Description" type="text" id="description" v-model="boardForm.description"/>
                                         </div>
                                         <div class="mt-2">
                                             <label for="column">Add default columns(To do, In progress, Done):</label>
-                                            <input type="checkbox" id="column" v-model="boardForm.defaultCols"/>
+                                            <input class="ml-1.5" type="checkbox" id="column" v-model="boardForm.defaultCols"/>
                                         </div>
                                     </div>
                                 </div>
@@ -246,11 +278,25 @@ function submitCreateBoard(){
                                         </DialogTitle>
                                         <div class="mt-2">
                                             <label for="name">Name:</label>
-                                            <input id="name" v-model="selectedBoard.name"/>
+                                            <input class="peer h-full w-full rounded-[7px]  !border  !border-gray-300
+                                            border-t-transparent bg-transparent bg-white px-3 py-2.5 font-sans text-sm
+                                            font-normal text-blue-gray-700  shadow-lg shadow-gray-900/5 outline outline-0
+                                            ring-4 ring-transparent transition-all placeholder:text-gray-500 placeholder-shown:border
+                                            placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200
+                                            focus:border-2 focus:!border-gray-900 focus:border-t-transparent focus:!border-t-gray-900
+                                            focus:outline-0 focus:ring-gray-900/10 disabled:border-0 disabled:bg-blue-gray-50"
+                                                   placeholder="Board Name" id="name" v-model="selectedBoard.name"/>
                                         </div>
                                         <div class="mt-2">
                                             <label for="description">Description:</label>
-                                            <input id="description" v-model="selectedBoard.description"/>
+                                            <input class="peer h-full w-full rounded-[7px]  !border  !border-gray-300
+                                            border-t-transparent bg-transparent bg-white px-3 py-2.5 font-sans text-sm
+                                            font-normal text-blue-gray-700  shadow-lg shadow-gray-900/5 outline outline-0
+                                            ring-4 ring-transparent transition-all placeholder:text-gray-500 placeholder-shown:border
+                                            placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200
+                                            focus:border-2 focus:!border-gray-900 focus:border-t-transparent focus:!border-t-gray-900
+                                            focus:outline-0 focus:ring-gray-900/10 disabled:border-0 disabled:bg-blue-gray-50"
+                                                   placeholder="Board Description" id="description" v-model="selectedBoard.description"/>
                                         </div>
                                     </div>
                                 </div>

@@ -34,7 +34,7 @@ const logout = () => {
         <Banner />
 
         <div class="">
-            <nav class="bg-white border-b border-gray-100">
+            <nav class="bg-gray-700 border-b border-gray-100">
                 <!-- Primary Navigation Menu -->
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="flex justify-between h-16">
@@ -48,10 +48,10 @@ const logout = () => {
 
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('project.index')" :active="route().current('project.index')">
+                                <NavLink :href="route('project.index')" :active="route().current('project.index')" class="text-white">
                                     Projects
                                 </NavLink>
-                                <NavLink :href="route('task.index')" :active="route().current('task.index')">
+                                <NavLink :href="route('task.index')" :active="route().current('task.index')" class="text-white">
                                     Tasks
                                 </NavLink>
                             </div>

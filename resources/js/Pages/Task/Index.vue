@@ -4,6 +4,7 @@ import {router} from '@inertiajs/vue3'
 import {Link} from "@inertiajs/vue3";
 import {useForm} from '@inertiajs/vue3'
 import AppLayout from "@/Layouts/AppLayout.vue";
+import Footer from "@/Layouts/Footer.vue";
 
 
 const props = defineProps({
@@ -29,6 +30,7 @@ function submit() {
 <template>
 
     <AppLayout title="Tasks"></AppLayout>
+    <div class="bg-gray-200">
     <form class="max-w-lg mx-auto" @submit.prevent="submit">
 
         <div class="mx-auto mb-3">
@@ -67,6 +69,7 @@ function submit() {
             <Link  href="/task" method="get" type="button" class="text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-600 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">Reset</Link>
         </div>
     </form>
+    </div>
 
     <ul role="list" class="divide-y divide-gray-100 mx-40">
         <li v-for="task in tasks" class="flex items-center justify-between gap-x-6 py-5">
@@ -95,6 +98,7 @@ function submit() {
         </li>
 
     </ul>
+    <Footer></Footer>
 
 
 
